@@ -109,24 +109,24 @@ eta_values = []
 # All functions are defined here -----------------------------------------------------------------------
 
 # velocity potential for finite depth
-def velocity_Potential_finiteDepth(wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, direction_of_Wave_Propagation, horizontal_coordinate_x=0, time_t=0):
+def velocity_Potential_finiteDepth(wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, direction_of_Wave_Propagation, coordinate_x_y=0, time_t=0):
     try:
         if direction_of_Wave_Propagation == "x":
-            velocity_Potential_phi = (wave_Amplitude_zita * constant["g"] / circular_Frequency_omega) * math.cosh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.cosh(wave_Number_k * average_Water_Depth_h) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+            velocity_Potential_phi = (wave_Amplitude_zita * constant["g"] / circular_Frequency_omega) * math.cosh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.cosh(wave_Number_k * average_Water_Depth_h) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
         elif direction_of_Wave_Propagation == "y":
-            velocity_Potential_phi = (wave_Amplitude_zita * constant["g"] / circular_Frequency_omega) * math.cosh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.cosh(wave_Number_k * average_Water_Depth_h) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+            velocity_Potential_phi = (wave_Amplitude_zita * constant["g"] / circular_Frequency_omega) * math.cosh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.cosh(wave_Number_k * average_Water_Depth_h) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
     except Exception as e:
         print(f"An error occurred: {e}")
         raise ValueError("Invalid direction of wave propagation. Please enter 'x' or 'y'.")
     return velocity_Potential_phi
 
 # velocity potential for deep water waves 
-def velocity_Potential_deepWater(wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, direction_of_Wave_Propagation, horizontal_coordinate_x=0, time_t=0):
+def velocity_Potential_deepWater(wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, direction_of_Wave_Propagation, coordinate_x_y, time_t):
     try :
         if direction_of_Wave_Propagation == "x":
-            velocity_Potential_phi = (wave_Amplitude_zita * constant["g"] / circular_Frequency_omega) * math.exp(wave_Number_k * vertical_coordinate_z) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+            velocity_Potential_phi = (wave_Amplitude_zita * constant["g"] / circular_Frequency_omega) * math.exp(wave_Number_k * vertical_coordinate_z) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
         elif direction_of_Wave_Propagation == "y":
-            velocity_Potential_phi = (wave_Amplitude_zita * constant["g"] / circular_Frequency_omega) * math.exp(wave_Number_k * vertical_coordinate_z) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+            velocity_Potential_phi = (wave_Amplitude_zita * constant["g"] / circular_Frequency_omega) * math.exp(wave_Number_k * vertical_coordinate_z) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
         else:
             raise ValueError("Invalid direction of wave propagation. Please enter 'x' or 'y'.")
     except Exception as e:
@@ -159,8 +159,8 @@ def vertical_coordinate_movement_direction(vertical_coordinate_z, average_Water_
 
 
 # calculate wave profile
-def wave_Profile(wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, horizontal_coordinate_x, time_t):
-    wave_Profile_eta = wave_Amplitude_zita * math.sin(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+def wave_Profile(wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, coordinate_x_y, time_t):
+    wave_Profile_eta = wave_Amplitude_zita * math.sin(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
     return wave_Profile_eta
 
 
@@ -185,7 +185,7 @@ def calculate_wave_profile(wave_Amplitude_zita, wave_Number_k, circular_Frequenc
 
 
 
-def dynamic_Pressure_finiteDepth(fluid_density_rho, wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, horizontal_coordinate_x,time_t):
+def dynamic_Pressure_finiteDepth(fluid_density_rho, wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, coordinate_x_y,time_t):
     dynamic_Pressure_finiteDepth = (
         fluid_density_rho
         * constant["g"]
@@ -198,7 +198,7 @@ def dynamic_Pressure_finiteDepth(fluid_density_rho, wave_Amplitude_zita, wave_Nu
         )
         * math.sin(
             circular_Frequency_omega * time_t
-            - wave_Number_k * horizontal_coordinate_x
+            - wave_Number_k * coordinate_x_y
         )
     )
 
@@ -206,7 +206,7 @@ def dynamic_Pressure_finiteDepth(fluid_density_rho, wave_Amplitude_zita, wave_Nu
 
 
 
-def dynamic_Pressure_deepWater(fluid_density_rho, wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, horizontal_coordinate_x,time_t):
+def dynamic_Pressure_deepWater(fluid_density_rho, wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, coordinate_x_y,time_t):
     dynamic_Pressure_deepWater = (
         fluid_density_rho
         * constant["g"]
@@ -214,7 +214,7 @@ def dynamic_Pressure_deepWater(fluid_density_rho, wave_Amplitude_zita, wave_Numb
         * math.exp(wave_Number_k * vertical_coordinate_z)
         * math.sin(
             circular_Frequency_omega * time_t
-            - wave_Number_k * horizontal_coordinate_x
+            - wave_Number_k * coordinate_x_y
         )
     )
 
@@ -227,11 +227,11 @@ def dynamic_Pressure_deepWater(fluid_density_rho, wave_Amplitude_zita, wave_Numb
 
 def calculate_finiteDepth_velocity_components_x(velocity_Potential_phi, wave_Number_k, circular_Frequency_omega, direction_of_Wave_Propagation):
     if direction_of_Wave_Propagation == "x":
-        u = (wave_Amplitude_zita * circular_Frequency_omega) * math.cosh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.sinh(wave_Number_k * average_Water_Depth_h) * math.sin(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+        u = (wave_Amplitude_zita * circular_Frequency_omega) * math.cosh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.sinh(wave_Number_k * average_Water_Depth_h) * math.sin(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
         v = 0
     elif direction_of_Wave_Propagation == "y":
         u = 0
-        v = (wave_Amplitude_zita * circular_Frequency_omega) * math.cosh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.sinh(wave_Number_k * average_Water_Depth_h) * math.sin(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+        v = (wave_Amplitude_zita * circular_Frequency_omega) * math.cosh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.sinh(wave_Number_k * average_Water_Depth_h) * math.sin(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
     else:
         raise ValueError("Invalid direction of wave propagation. Please enter 'x' or 'y'.")
 
@@ -241,11 +241,11 @@ def calculate_finiteDepth_velocity_components_x(velocity_Potential_phi, wave_Num
 
 def calculate_finiteDepth_velocity_components_z(velocity_Potential_phi, wave_Number_k, circular_Frequency_omega, direction_of_Wave_Propagation):
     if direction_of_Wave_Propagation == "x":
-        u = (wave_Amplitude_zita * circular_Frequency_omega) * math.sinh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.sinh(wave_Number_k * average_Water_Depth_h) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+        u = (wave_Amplitude_zita * circular_Frequency_omega) * math.sinh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.sinh(wave_Number_k * average_Water_Depth_h) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
         v = 0
     elif direction_of_Wave_Propagation == "y":
         u = 0
-        v = (wave_Amplitude_zita * circular_Frequency_omega) * math.sinh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.sinh(wave_Number_k * average_Water_Depth_h) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+        v = (wave_Amplitude_zita * circular_Frequency_omega) * math.sinh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.sinh(wave_Number_k * average_Water_Depth_h) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
     else:
         raise ValueError("Invalid direction of wave propagation. Please enter 'x' or 'y'.")
 
@@ -255,11 +255,11 @@ def calculate_finiteDepth_velocity_components_z(velocity_Potential_phi, wave_Num
 
 def calculate_deepWater_velocity_components_x(velocity_Potential_phi, wave_Number_k, circular_Frequency_omega, direction_of_Wave_Propagation):
     if direction_of_Wave_Propagation == "x":
-        u = (wave_Amplitude_zita * circular_Frequency_omega) * math.exp(wave_Number_k * vertical_coordinate_z) * math.sin(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+        u = (wave_Amplitude_zita * circular_Frequency_omega) * math.exp(wave_Number_k * vertical_coordinate_z) * math.sin(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
         v = 0
     elif direction_of_Wave_Propagation == "y":
         u = 0
-        v = (wave_Amplitude_zita * circular_Frequency_omega) * math.exp(wave_Number_k * vertical_coordinate_z) * math.sin(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+        v = (wave_Amplitude_zita * circular_Frequency_omega) * math.exp(wave_Number_k * vertical_coordinate_z) * math.sin(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
     else:
         raise ValueError("Invalid direction of wave propagation. Please enter 'x' or 'y'.")
 
@@ -269,11 +269,11 @@ def calculate_deepWater_velocity_components_x(velocity_Potential_phi, wave_Numbe
 
 def calculate_deepWater_velocity_components_z(velocity_Potential_phi, wave_Number_k, circular_Frequency_omega, direction_of_Wave_Propagation):
     if direction_of_Wave_Propagation == "x":
-        u = (wave_Amplitude_zita * circular_Frequency_omega) * math.exp(wave_Number_k * vertical_coordinate_z) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+        u = (wave_Amplitude_zita * circular_Frequency_omega) * math.exp(wave_Number_k * vertical_coordinate_z) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
         v = 0
     elif direction_of_Wave_Propagation == "y":
         u = 0
-        v = (wave_Amplitude_zita * circular_Frequency_omega) * math.exp(wave_Number_k * vertical_coordinate_z) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+        v = (wave_Amplitude_zita * circular_Frequency_omega) * math.exp(wave_Number_k * vertical_coordinate_z) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
     else:
         raise ValueError("Invalid direction of wave propagation. Please enter 'x' or 'y'.")
 
@@ -284,11 +284,11 @@ def calculate_deepWater_velocity_components_z(velocity_Potential_phi, wave_Numbe
 
 def calculate_finiteDepth_acceleration_components_x(velocity_Potential_phi, wave_Number_k, circular_Frequency_omega, direction_of_Wave_Propagation):
     if direction_of_Wave_Propagation == "x":
-        u = (wave_Amplitude_zita * circular_Frequency_omega ** 2) * math.cosh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.sinh(wave_Number_k * average_Water_Depth_h) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+        u = (wave_Amplitude_zita * circular_Frequency_omega ** 2) * math.cosh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.sinh(wave_Number_k * average_Water_Depth_h) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
         v = 0
     elif direction_of_Wave_Propagation == "y":
         u = 0
-        v = (wave_Amplitude_zita * circular_Frequency_omega ** 2) * math.cosh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.sinh(wave_Number_k * average_Water_Depth_h) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+        v = (wave_Amplitude_zita * circular_Frequency_omega ** 2) * math.cosh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.sinh(wave_Number_k * average_Water_Depth_h) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
     else:
         raise ValueError("Invalid direction of wave propagation. Please enter 'x' or 'y'.")
 
@@ -298,11 +298,11 @@ def calculate_finiteDepth_acceleration_components_x(velocity_Potential_phi, wave
 
 def calculate_finiteDepth_acceleration_components_z(velocity_Potential_phi, wave_Number_k, circular_Frequency_omega, direction_of_Wave_Propagation):
     if direction_of_Wave_Propagation == "x":
-        u = - (wave_Amplitude_zita * circular_Frequency_omega ** 2) * math.sinh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.sinh(wave_Number_k * average_Water_Depth_h) * math.sin(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+        u = - (wave_Amplitude_zita * circular_Frequency_omega ** 2) * math.sinh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.sinh(wave_Number_k * average_Water_Depth_h) * math.sin(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
         v = 0
     elif direction_of_Wave_Propagation == "y":
         u = 0
-        v = - (wave_Amplitude_zita * circular_Frequency_omega ** 2) * math.sinh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.sinh(wave_Number_k * average_Water_Depth_h) * math.sin(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+        v = - (wave_Amplitude_zita * circular_Frequency_omega ** 2) * math.sinh(wave_Number_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.sinh(wave_Number_k * average_Water_Depth_h) * math.sin(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
     else:
         raise ValueError("Invalid direction of wave propagation. Please enter 'x' or 'y'.")
 
@@ -312,11 +312,11 @@ def calculate_finiteDepth_acceleration_components_z(velocity_Potential_phi, wave
 
 def calculate_deepWater_acceleration_components_x(velocity_Potential_phi, wave_Number_k, circular_Frequency_omega, direction_of_Wave_Propagation):
     if direction_of_Wave_Propagation == "x":
-        u = (wave_Amplitude_zita * circular_Frequency_omega ** 2) * math.exp(wave_Number_k * vertical_coordinate_z) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+        u = (wave_Amplitude_zita * circular_Frequency_omega ** 2) * math.exp(wave_Number_k * vertical_coordinate_z) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
         v = 0
     elif direction_of_Wave_Propagation == "y":
         u = 0
-        v = (wave_Amplitude_zita * circular_Frequency_omega ** 2) * math.exp(wave_Number_k * vertical_coordinate_z) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+        v = (wave_Amplitude_zita * circular_Frequency_omega ** 2) * math.exp(wave_Number_k * vertical_coordinate_z) * math.cos(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
     else:
         raise ValueError("Invalid direction of wave propagation. Please enter 'x' or 'y'.")
 
@@ -326,11 +326,11 @@ def calculate_deepWater_acceleration_components_x(velocity_Potential_phi, wave_N
 
 def calculate_deepWater_acceleration_components_z(velocity_Potential_phi, wave_Number_k, circular_Frequency_omega, direction_of_Wave_Propagation):
     if direction_of_Wave_Propagation == "x":
-        u = - (wave_Amplitude_zita * circular_Frequency_omega ** 2) * math.exp(wave_Number_k * vertical_coordinate_z) * math.sin(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+        u = - (wave_Amplitude_zita * circular_Frequency_omega ** 2) * math.exp(wave_Number_k * vertical_coordinate_z) * math.sin(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
         v = 0
     elif direction_of_Wave_Propagation == "y":
         u = 0
-        v = - (wave_Amplitude_zita * circular_Frequency_omega ** 2) * math.exp(wave_Number_k * vertical_coordinate_z) * math.sin(circular_Frequency_omega * time_t - wave_Number_k * horizontal_coordinate_x)
+        v = - (wave_Amplitude_zita * circular_Frequency_omega ** 2) * math.exp(wave_Number_k * vertical_coordinate_z) * math.sin(circular_Frequency_omega * time_t - wave_Number_k * coordinate_x_y)
     else:
         raise ValueError("Invalid direction of wave propagation. Please enter 'x' or 'y'.")
 
@@ -346,9 +346,9 @@ wave_Length_lamda = float(input("What is the wavelength of the wave? "))
 wave_Period_T = float(input("What is the wave period? "))
 wave_Amplitude_zita = float(input("What is the wave amplitude? "))
 average_Water_Depth_h = float(input("What is the average water depth? "))
-direction_of_Wave_Propagation = input("What is the direction of wave propagation? (Enter 'x' or 'y'): ")
+direction_of_Wave_Propagation = input("What is the direction of wave propagation? (Enter 'x' or 'y'): ").lower()
+coordinate_x_y = float(input("What is the coordinate as selected earlier? (Enter x or y): "))
 vertical_coordinate_z = float(input("What is the vertical coordinate? (Enter z): "))
-horizontal_coordinate_x = float(input("What is the horizontal coordinate? (Enter x): "))
 time_t = float(input("What is the time? (Enter t): "))
 
 
@@ -357,12 +357,12 @@ time_t = float(input("What is the time? (Enter t): "))
 circular_Frequency_omega = circular_Frequency(wave_Period_T)
 wave_Number_k = wave_Number(wave_Length_lamda)
 vertical_coordinate_movement_direction_result = vertical_coordinate_movement_direction(vertical_coordinate_z, average_Water_Depth_h)
-velocity_Potential_phi_deepWater = velocity_Potential_deepWater(wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, direction_of_Wave_Propagation, horizontal_coordinate_x, time_t)
-velocity_Potential_phi_finiteDepth = velocity_Potential_finiteDepth(wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, direction_of_Wave_Propagation, horizontal_coordinate_x, time_t)
-wave_Profile_eta = wave_Profile(wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, horizontal_coordinate_x, time_t)
+velocity_Potential_phi_deepWater = velocity_Potential_deepWater(wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, direction_of_Wave_Propagation, coordinate_x_y, time_t)
+velocity_Potential_phi_finiteDepth = velocity_Potential_finiteDepth(wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, direction_of_Wave_Propagation, coordinate_x_y, time_t)
+wave_Profile_eta = wave_Profile(wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, coordinate_x_y, time_t)
 x_values, eta_values = calculate_wave_profile(wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, time_t, wave_Length_lamda)
-dynamic_Pressure_p_finiteDepth = dynamic_Pressure_finiteDepth(constant["rho_seawater"], wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, horizontal_coordinate_x,time_t)
-dynamic_Pressure_p_deepWater = dynamic_Pressure_deepWater(constant["rho_seawater"], wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, horizontal_coordinate_x,time_t)
+dynamic_Pressure_p_finiteDepth = dynamic_Pressure_finiteDepth(constant["rho_seawater"], wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, coordinate_x_y,time_t)
+dynamic_Pressure_p_deepWater = dynamic_Pressure_deepWater(constant["rho_seawater"], wave_Amplitude_zita, wave_Number_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, coordinate_x_y,time_t)
 x_components_velocity_finiteDepth = calculate_finiteDepth_velocity_components_x(velocity_Potential_phi_finiteDepth, wave_Number_k, circular_Frequency_omega, direction_of_Wave_Propagation)
 z_components_velocity_finiteDepth = calculate_finiteDepth_velocity_components_z(velocity_Potential_phi_finiteDepth, wave_Number_k, circular_Frequency_omega, direction_of_Wave_Propagation)
 x_components_velocity_deepWater = calculate_deepWater_velocity_components_x(velocity_Potential_phi_deepWater, wave_Number_k, circular_Frequency_omega, direction_of_Wave_Propagation)
