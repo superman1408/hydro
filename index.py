@@ -25,22 +25,92 @@ def connection_check():
         raise ImportError("Please ensure that all required libraries are installed.")
 
 
-def wave_number_with_circular_frequency_check(circular_Frequency_omega, wave_Number_k):
-    if (circular_Frequency_omega ** 2 / constant["g"] == wave_Number_k * math.tanh(wave_Number_k * average_Water_Depth_h)):
-        print("The wave number and circular frequency satisfy the dispersion relation.")
+# def wave_number_with_circular_frequency_check(circular_Frequency_omega, wave_Number_k):
+#     if (circular_Frequency_omega ** 2 / constant["g"] == wave_Number_k * math.tanh(wave_Number_k * average_Water_Depth_h)):
+#         print("The wave number and circular frequency satisfy the dispersion relation.")
+#     else:
+#         print("The wave number and circular frequency do not satisfy the dispersion relation.")
+#         # raise ValueError("Please check the values of wave number and circular frequency.")
+        
+
+
+def wave_number_with_circular_frequency_check(circular_Frequency_omega, wave_Number_k, average_Water_Depth_h):
+
+    left_side = (
+        circular_Frequency_omega ** 2
+        / constant["g"]
+    )
+
+    right_side = (
+        wave_Number_k
+        * math.tanh(
+            wave_Number_k * average_Water_Depth_h
+        )
+    )
+
+    tolerance = 1e-6
+
+    if abs(left_side - right_side) < tolerance:
+
+        print(
+            "The wave number and circular frequency "
+            "satisfy the dispersion relation."
+        )
+
     else:
-        print("The wave number and circular frequency do not satisfy the dispersion relation.")
-        # raise ValueError("Please check the values of wave number and circular frequency.")
+
+        print(
+            "The wave number and circular frequency "
+            "do not satisfy the dispersion relation."
+        )
+
+    print("Left side  (ω²/g):", left_side)
+    print("Right side (k tanh(kh)):", right_side)
+    print("Difference:", abs(left_side - right_side))
 
 
-def wave_length_with_wave_period_check(wave_Length_lamda, wave_Period_T, circular_Frequency_omega, wave_Number_k):
-    if (wave_Length_lamda == constant["g"] / 2 * math.pi * wave_Period_T ** 2 * math.tanh(2 * math.pi * average_Water_Depth_h / wave_Length_lamda)):
-        print("The wave length and wave period satisfy the dispersion relation.")
+# def wave_length_with_wave_period_check(wave_Length_lamda, wave_Period_T, circular_Frequency_omega, wave_Number_k):
+#     if (wave_Length_lamda == constant["g"] / 2 * math.pi * wave_Period_T ** 2 * math.tanh(2 * math.pi * average_Water_Depth_h / wave_Length_lamda)):
+#         print("The wave length and wave period satisfy the dispersion relation.")
+#     else:
+#         print("The wave length and wave period do not satisfy the dispersion relation.")
+#         # raise ValueError("Please check the values of wave length and wave period.")
+
+
+
+def wave_length_with_wave_period_check(wave_Length_lamda, wave_Period_T, average_Water_Depth_h):
+    left_side = wave_Length_lamda
+
+    right_side = (
+        constant["g"]
+        * wave_Period_T ** 2
+        / (2 * math.pi)
+        * math.tanh(
+            2 * math.pi
+            * average_Water_Depth_h
+            / wave_Length_lamda
+        )
+    )
+
+    tolerance = 1e-6
+
+    if abs(left_side - right_side) < tolerance:
+
+        print(
+            "The wave length and wave period "
+            "satisfy the dispersion relation."
+        )
+
     else:
-        print("The wave length and wave period do not satisfy the dispersion relation.")
-        # raise ValueError("Please check the values of wave length and wave period.")
 
-    
+        print(
+            "The wave length and wave period "
+            "do not satisfy the dispersion relation."
+        )
+
+    print("Left side  (λ):", left_side)
+    print("Right side:", right_side)
+    print("Difference:", abs(left_side - right_side))
 
 
 
@@ -318,8 +388,8 @@ x_components_acceleration_deepWater = calculate_deepWater_acceleration_component
 z_components_acceleration_deepWater = calculate_deepWater_acceleration_components_z(velocity_Potential_phi_deepWater, wave_Number_k, circular_Frequency_omega, direction_of_Wave_Propagation)
 
 check_connection = connection_check()
-check_wave_number_with_circular_frequency = wave_number_with_circular_frequency_check(circular_Frequency_omega, wave_Number_k)
-check_wave_length_with_wave_period = wave_length_with_wave_period_check(wave_Length_lamda, wave_Period_T, circular_Frequency_omega, wave_Number_k)
+check_wave_number_with_circular_frequency = wave_number_with_circular_frequency_check(circular_Frequency_omega, wave_Number_k, average_Water_Depth_h)
+check_wave_length_with_wave_period = wave_length_with_wave_period_check(wave_Length_lamda, wave_Period_T, average_Water_Depth_h)
 
 
 # Print the results ---------------------------------------------------------------------------------------------------------
