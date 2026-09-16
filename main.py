@@ -176,6 +176,44 @@ def wave_Profile(wave_amplitude, waveNumber_infinite_k, waveNumber_finite_k, cir
     return wave_Profile_finite_zeta, wave_Profile_infinite_zeta
 
 
+#------------------------------Dynamic Pressure Calculation---------------------------------------------
+def dynamic_Pressure_finiteDepth(fluid_density_rho, wave_amplitude, waveNumber_finite_k, circular_frequency, vertical_coordinate_z, average_water_depth, coordinate_x_y,time_t):
+    dynamic_Pressure_finiteDepth = (
+        fluid_density_rho
+        * constant["g"]
+        * wave_amplitude
+        * math.cosh(
+            waveNumber_finite_k * (vertical_coordinate_z + average_water_depth)
+        )
+        / math.cosh(
+            waveNumber_finite_k * average_water_depth
+        )
+        * math.sin(
+            circular_frequency * time_t
+            - waveNumber_finite_k * coordinate_x_y
+        )
+    )
+
+    return dynamic_Pressure_finiteDepth
+
+
+
+def dynamic_Pressure_deepWater(fluid_density_rho, wave_amplitude, waveNumber_infinite_k, circular_frequency, vertical_coordinate_z, coordinate_x_y,time_t):
+    dynamic_Pressure_deepWater = (
+        fluid_density_rho
+        * constant["g"]
+        * wave_amplitude
+        * math.exp(waveNumber_infinite_k * vertical_coordinate_z)
+        * math.sin(
+            circular_frequency * time_t
+            - waveNumber_infinite_k * coordinate_x_y
+        )
+    )
+
+    return dynamic_Pressure_deepWater
+
+#-------------------------------X component of velocity and Acceleration for Finite Depth---------------------------------------------
+
 
 # Take Inputs from here-----------------------------
 connection_check()
@@ -192,6 +230,8 @@ time_t = float(input("What is the time? (Enter t): "))
 #-----------------Calculations---------------------------------------------
 circular_frequency = circular_Frequency(wave_period)
 check_wave_number_with_circular_frequency = wave_number_with_circular_frequency_check(circular_frequency, waveNumber_finite(circular_frequency, average_water_depth), waveNumber_infinite(circular_frequency), average_water_depth)
+dynamic_pressure_finiteDepth = dynamic_Pressure_finiteDepth(constant["rho_seawater"], wave_amplitude, waveNumber_finite(circular_frequency, average_water_depth), circular_frequency, vertical_coordinate_z, average_water_depth, coordinate_x_y,time_t)
+dynamic_pressure_infiniteDepth = dynamic_Pressure_deepWater(constant["rho_seawater"], wave_amplitude, waveNumber_infinite(circular_frequency), circular_frequency, vertical_coordinate_z, coordinate_x_y,time_t)
 
 # -----------------------Deep / Infinite Water Calculations---------------------------------------------
 waveNumber_infinite_k = waveNumber_infinite(circular_frequency)
@@ -204,7 +244,7 @@ wave_Profile_infinite_zeta = wave_Profile(wave_amplitude, waveNumber_infinite_k,
 waveNumber_finite_k = waveNumber_finite(circular_frequency, average_water_depth)
 wave_length_finite_depth_lambda = wave_Length_finiteDepth(waveNumber_finite_k)
 velocity_Potential_phi_finiteDepth = velocity_Potential_finiteDepth(wave_amplitude, waveNumber_finite_k, circular_frequency, vertical_coordinate_z, average_water_depth, direction_of_Wave_Propagation, coordinate_x_y, time_t)
-wave_Profile_finite_zeta = wave_Profile(wave_amplitude, waveNumber_infinite_k, waveNumber_finite_k, circular_frequency, coordinate_x_y, time_t)
+wave_Profile = wave_Profile(wave_amplitude, waveNumber_infinite_k, waveNumber_finite_k, circular_frequency, coordinate_x_y, time_t)
 
 # --------------------------------Display Results---------------------------------------------
 print("\nResults:---------------------------------------------------------------------------------")
@@ -224,8 +264,12 @@ print("-------------------------------------------------------------")
 print("Velocity Potential and Wave Profile Calculations:")
 print(f"Velocity Potential (φ) - Deep / Infinite Water: {velocity_Potential_phi_infiniteDepth}")
 print(f"Velocity Potential (φ) - Finite Depth Water: {velocity_Potential_phi_finiteDepth}")
-print(f"Wave Profile (ζ) - Deep / Infinite Water: {wave_Profile_infinite_zeta}")
-print(f"Wave Profile (ζ) - Finite Depth Water: {wave_Profile_finite_zeta}")
+print(f"Wave Profile (ζ) - Finite Depth Water and Deep / Infinite Water : {wave_Profile}")
+
+print("-------------------------------------------------------------")
+print("Dynamic Pressure Calculations:")
+print(f"Dynamic Pressure (p) - Deep / Infinite Water: {dynamic_pressure_infiniteDepth}")
+print(f"Dynamic Pressure (p) - Finite Depth Water: {dynamic_pressure_finiteDepth}")
 
 # --------------------------------Plotting Section---------------------------------------------
 # Generate a span of k values from 0 up to double the deep water wave number for comparison
