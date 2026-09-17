@@ -386,7 +386,7 @@ average_water_depth = float(input("Enter the average water depth (h) in meters: 
 
 direction_of_Wave_Propagation = input("What is the direction of wave propagation? (Enter 'x' or 'y'): ").lower()
 coordinate_x_y = float(input("What is the coordinate as selected earlier? (Enter x or y): "))
-vertical_coordinate_z = - float(input("What is the vertical coordinate z (e.g., enter -5 for 5m depth): "))
+vertical_coordinate_z = - float(input("What is the vertical coordinate z (e.g., enter 5 for 5m depth): "))
 time_t = float(input("What is the time? (Enter t): "))
 
 
