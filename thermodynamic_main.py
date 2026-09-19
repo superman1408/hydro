@@ -11,6 +11,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import math
 import matplotlib.pyplot as plt
+from PyQt5.QtGui import QPixmap
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import calculation
 from utils import *
@@ -146,12 +147,32 @@ class Ui_MainWindow(object):
         self.gridLayout_4.addWidget(self.scrollArea, 2, 3, 2, 3)
         self.label_6 = QtWidgets.QLabel(self.groupBox)
         self.label_6.setObjectName("label_6")
+        font = QtGui.QFont()
+        font.setBold(True)
+        self.label_6.setFont(font)
+        self.Result_label.setFont(font)
         self.gridLayout_4.addWidget(self.label_6, 1, 0, 1, 1)
+
         self.Logo_label = QtWidgets.QLabel(self.groupBox)
-        self.Logo_label.setText("")
-        self.Logo_label.setPixmap(QtGui.QPixmap("assets/Ashkam LOGO.png (1).png"))
         self.Logo_label.setObjectName("Logo_label")
-        self.gridLayout_4.addWidget(self.Logo_label, 0, 0, 1, 1)
+        self.Logo_label.setText("")
+
+        pixmap = QtGui.QPixmap("assets/Ashkam LOGO.png (1).png")
+
+        self.Logo_label.setPixmap(
+            pixmap.scaled(
+                180, 80,
+                QtCore.Qt.KeepAspectRatio,
+                QtCore.Qt.SmoothTransformation
+            )
+        )
+
+        self.Logo_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.Logo_label.setMinimumSize(180, 80)
+
+        self.gridLayout_4.addWidget(
+            self.Logo_label, 0, 0, 1, 1
+        )
         spacerItem6 = QtWidgets.QSpacerItem(20, 411, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_4.addItem(spacerItem6, 2, 6, 2, 1)
         spacerItem7 = QtWidgets.QSpacerItem(93, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -168,6 +189,7 @@ class Ui_MainWindow(object):
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setFont(font)
         self.label.setObjectName("label")
         self.gridLayout_4.addWidget(self.label, 0, 3, 1, 1)
@@ -207,7 +229,7 @@ class Ui_MainWindow(object):
         self.Result_label.setText(_translate("MainWindow", "RESULT"))
         self.label_6.setText(_translate("MainWindow", "INPUT"))
         self.label_12.setText(_translate("MainWindow", "© 2026 ASHKAM ENERGY Pvt. Ltd. | All Rights Reserved"))
-        self.label.setText(_translate("MainWindow", "Thermodynamics Load       "))
+        self.label.setText(_translate("MainWindow", "THERMODYNAMIC LOAD"))
 
         self.pushButton.clicked.connect(self.run_calculation)
 
