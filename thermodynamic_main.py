@@ -13,7 +13,7 @@ import math
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import calculation
-from utils.constants import constant
+from utils import *
 
 
 class Ui_MainWindow(object):
@@ -340,7 +340,7 @@ class Ui_MainWindow(object):
 
             target_value = (
                 circular_frequency ** 2
-            ) / constant["g"]
+            ) / g
 
             # =========================================================
             # Create figure based on GraphicsView size

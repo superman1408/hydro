@@ -13,6 +13,9 @@ constant = {
 
 
 
+
+
+
 # ----------------Checks-------------------------------------------------------------------------------------------
 
 def connection_check():
@@ -380,6 +383,7 @@ def z_component_acceleration_infiniteDepth(circular_frequency, wave_amplitude, w
 
 # Take Inputs from here-----------------------------
 connection_check()
+print(constant["g"])
 wave_period = float(input("Enter the wave period (T) in seconds: "))
 wave_amplitude = float(input("Enter the wave amplitude (ζ) in meters: "))
 average_water_depth = float(input("Enter the average water depth (h) in meters: "))

@@ -1,5 +1,5 @@
 import math
-from utils.constants import constant
+from utils import *
 
 # Define constantss ------------------------------------------------------------------------------------
 # constants = {
@@ -12,6 +12,8 @@ from utils.constants import constant
 # }
 
 # main calculation function
+
+
 
 def sea_environment_calculation(frontend):
     try:
@@ -34,7 +36,7 @@ def sea_environment_calculation(frontend):
         wave_amplitude = input_data["wave_amplitude"]
         average_water_depth = input_data["average_water_depth"]
         coordinate_x_y = input_data["coordinate_x_y"]
-        vertical_coordinate_z = input_data["vertical_coordinate_z"]
+        vertical_coordinate_z = - input_data["vertical_coordinate_z"]
         time_t = input_data["time_t"]
 
         print(wave_period)
@@ -46,26 +48,19 @@ def sea_environment_calculation(frontend):
 
         # ----------------Checks-------------------------------------------------------------------------------------------
 
-        def connection_check():
-            try:
-                import math
-                import matplotlib.pyplot as plt
-                print("All required libraries are installed and imported successfully.")
-            except ImportError as e:
-                print(f"An error occurred while importing libraries: {e}")
-                raise ImportError("Please ensure that all required libraries are installed.")
+
             
 
         def wave_number_with_circular_frequency_check(circular_frequency, wave_number_finite_k, wave_number_deep_water_k, average_water_depth):
 
             left_side_finite = (
                 circular_frequency ** 2
-                / constant["g"]
+                / g
             )
             
             left_side_deep = (
                 circular_frequency ** 2
-                / constant["g"]
+                / g
             )
 
             right_side_finite = (
@@ -132,7 +127,7 @@ def sea_environment_calculation(frontend):
             return 2 * math.pi / wave_Period_T
 
         def waveNumber_infinite(circular_Frequency_omega):
-            return circular_Frequency_omega ** 2 / constant["g"]
+            return circular_Frequency_omega ** 2 / g
 
         # def waveNumber_finite(circular_Frequency_omega, average_Water_Depth_h):
         #     return circular_Frequency_omega / math.sqrt(constants["g"] * average_Water_Depth_h)
@@ -141,7 +136,7 @@ def sea_environment_calculation(frontend):
 
         def waveNumber_finite(circular_Frequency_omega, average_Water_Depth_h):
             # Initial guess using the deep water wave number
-            k_guess = (circular_Frequency_omega ** 2) / constant["g"]
+            k_guess = (circular_Frequency_omega ** 2) / g
             tolerance = 1e-6
             max_iterations = 100
             
@@ -151,7 +146,7 @@ def sea_environment_calculation(frontend):
                     break
                 
                 # Fixed-point iteration step: k = ω² / (g * tanh(kh))
-                k_next = (circular_Frequency_omega ** 2) / (constant["g"] * tanh_kh)
+                k_next = (circular_Frequency_omega ** 2) / (g * tanh_kh)
                 
                 if abs(k_next - k_guess) < tolerance:
                     return k_next
@@ -175,9 +170,9 @@ def sea_environment_calculation(frontend):
         def velocity_Potential_finiteDepth(wave_amplitude, waveNumber_finite_k, circular_frequency, vertical_coordinate_z, average_water_depth, direction_of_Wave_Propagation, coordinate_x_y, time_t):
             try:
                 if direction_of_Wave_Propagation == "x":
-                    velocity_Potential_phi = (wave_amplitude * constant["g"] / circular_frequency) * math.cosh(waveNumber_finite_k * (vertical_coordinate_z + average_water_depth)) / math.cosh(waveNumber_finite_k * average_water_depth) * math.cos(circular_frequency * time_t - waveNumber_finite_k * coordinate_x_y)
+                    velocity_Potential_phi = (wave_amplitude * g / circular_frequency) * math.cosh(waveNumber_finite_k * (vertical_coordinate_z + average_water_depth)) / math.cosh(waveNumber_finite_k * average_water_depth) * math.cos(circular_frequency * time_t - waveNumber_finite_k * coordinate_x_y)
                 elif direction_of_Wave_Propagation == "y":
-                    velocity_Potential_phi = (wave_amplitude * constant["g"] / circular_frequency) * math.cosh(waveNumber_finite_k * (vertical_coordinate_z + average_water_depth)) / math.cosh(waveNumber_finite_k * average_water_depth) * math.cos(circular_frequency * time_t - waveNumber_finite_k * coordinate_x_y)
+                    velocity_Potential_phi = (wave_amplitude * g / circular_frequency) * math.cosh(waveNumber_finite_k * (vertical_coordinate_z + average_water_depth)) / math.cosh(waveNumber_finite_k * average_water_depth) * math.cos(circular_frequency * time_t - waveNumber_finite_k * coordinate_x_y)
             except Exception as e:
                 print(f"An error occurred: {e}")
                 raise ValueError("Invalid direction of wave propagation. Please enter 'x' or 'y'.")
@@ -187,9 +182,9 @@ def sea_environment_calculation(frontend):
         def velocity_Potential_infiniteDepth(wave_amplitude, waveNumber_infinite_k, circular_frequency, vertical_coordinate_z, direction_of_Wave_Propagation, coordinate_x_y, time_t):
             try :
                 if direction_of_Wave_Propagation == "x":
-                    velocity_Potential_phi = (wave_amplitude * constant["g"] / circular_frequency) * math.exp(waveNumber_infinite_k * vertical_coordinate_z) * math.cos(circular_frequency * time_t - waveNumber_infinite_k * coordinate_x_y)
+                    velocity_Potential_phi = (wave_amplitude * g / circular_frequency) * math.exp(waveNumber_infinite_k * vertical_coordinate_z) * math.cos(circular_frequency * time_t - waveNumber_infinite_k * coordinate_x_y)
                 elif direction_of_Wave_Propagation == "y":
-                    velocity_Potential_phi = (wave_amplitude * constant["g"] / circular_frequency) * math.exp(waveNumber_infinite_k * vertical_coordinate_z) * math.cos(circular_frequency * time_t - waveNumber_infinite_k * coordinate_x_y)
+                    velocity_Potential_phi = (wave_amplitude * g / circular_frequency) * math.exp(waveNumber_infinite_k * vertical_coordinate_z) * math.cos(circular_frequency * time_t - waveNumber_infinite_k * coordinate_x_y)
                 else:
                     raise ValueError("Invalid direction of wave propagation. Please enter 'x' or 'y'.")
             except Exception as e:
@@ -211,7 +206,7 @@ def sea_environment_calculation(frontend):
         def dynamic_Pressure_finiteDepth(fluid_density_rho, wave_amplitude, waveNumber_finite_k, circular_frequency, vertical_coordinate_z, average_water_depth, coordinate_x_y,time_t):
             dynamic_Pressure_finiteDepth = (
                 fluid_density_rho
-                * constant["g"]
+                * g
                 * wave_amplitude
                 * math.cosh(
                     waveNumber_finite_k * (vertical_coordinate_z + average_water_depth)
@@ -232,7 +227,7 @@ def sea_environment_calculation(frontend):
         def dynamic_Pressure_deepWater(fluid_density_rho, wave_amplitude, waveNumber_infinite_k, circular_frequency, vertical_coordinate_z, coordinate_x_y,time_t):
             dynamic_Pressure_deepWater = (
                 fluid_density_rho
-                * constant["g"]
+                * g
                 * wave_amplitude
                 * math.exp(waveNumber_infinite_k * vertical_coordinate_z)
                 * math.sin(
@@ -414,9 +409,10 @@ def sea_environment_calculation(frontend):
         # wave_period = float(input("Enter the wave period (T) in seconds: "))
         # wave_amplitude = float(input("Enter the wave amplitude (ζ) in meters: "))
         # average_water_depth = float(input("Enter the average water depth (h) in meters: "))
+        direction_of_Wave_Propagation = "x"
 
         # direction_of_Wave_Propagation = input("What is the direction of wave propagation? (Enter 'x' or 'y'): ").lower()
-        direction_of_Wave_Propagation = "x" # changes into hard code
+         # changes into hard code
         # coordinate_x_y = float(input("What is the coordinate as selected earlier? (Enter x or y): "))
         # vertical_coordinate_z = - float(input("What is the vertical coordinate z (e.g., enter 5 for 5m depth): "))
         # time_t = float(input("What is the time? (Enter t): "))
@@ -425,8 +421,8 @@ def sea_environment_calculation(frontend):
         #-----------------Calculations---------------------------------------------
         circular_frequency = circular_Frequency(wave_period)
         check_wave_number_with_circular_frequency = wave_number_with_circular_frequency_check(circular_frequency, waveNumber_finite(circular_frequency, average_water_depth), waveNumber_infinite(circular_frequency), average_water_depth)
-        dynamic_pressure_finiteDepth = dynamic_Pressure_finiteDepth(constant["rho_seawater"], wave_amplitude, waveNumber_finite(circular_frequency, average_water_depth), circular_frequency, vertical_coordinate_z, average_water_depth, coordinate_x_y,time_t)
-        dynamic_pressure_infiniteDepth = dynamic_Pressure_deepWater(constant["rho_seawater"], wave_amplitude, waveNumber_infinite(circular_frequency), circular_frequency, vertical_coordinate_z, coordinate_x_y,time_t)
+        dynamic_pressure_finiteDepth = dynamic_Pressure_finiteDepth(rho_seawater, wave_amplitude, waveNumber_finite(circular_frequency, average_water_depth), circular_frequency, vertical_coordinate_z, average_water_depth, coordinate_x_y,time_t)
+        dynamic_pressure_infiniteDepth = dynamic_Pressure_deepWater(rho_seawater, wave_amplitude, waveNumber_infinite(circular_frequency), circular_frequency, vertical_coordinate_z, coordinate_x_y,time_t)
 
         # -----------------------Deep / Infinite Water Calculations---------------------------------------------
         waveNumber_infinite_k = waveNumber_infinite(circular_frequency)
