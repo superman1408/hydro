@@ -172,7 +172,7 @@ def sea_environment_calculation(frontend):
         # -------------------------Velocity Potential and Wave Profile Calculations---------------------------------------------
 
         #---------------------- velocity potential for finite depth-----------------------------------------------------------------------------------
-        def velocity_Potential_finiteDepth(wave_amplitude, waveNumber_finite_k, circular_frequency, vertical_coordinate_z, average_water_depth, direction_of_Wave_Propagation, coordinate_x_y=0, time_t=0):
+        def velocity_Potential_finiteDepth(wave_amplitude, waveNumber_finite_k, circular_frequency, vertical_coordinate_z, average_water_depth, direction_of_Wave_Propagation, coordinate_x_y, time_t):
             try:
                 if direction_of_Wave_Propagation == "x":
                     velocity_Potential_phi = (wave_amplitude * constant["g"] / circular_frequency) * math.cosh(waveNumber_finite_k * (vertical_coordinate_z + average_water_depth)) / math.cosh(waveNumber_finite_k * average_water_depth) * math.cos(circular_frequency * time_t - waveNumber_finite_k * coordinate_x_y)
