@@ -113,7 +113,7 @@ eta_values_Deep = []
 # All functions are defined here -----------------------------------------------------------------------
 
 # velocity potential for finite depth
-def velocity_Potential_finiteDepth(wave_Amplitude_zita, waveNumber_finite_k, wave_NumberDeepWater_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, direction_of_Wave_Propagation, coordinate_x_y=0, time_t=0):
+def velocity_Potential_finiteDepth(wave_Amplitude_zita, waveNumber_finite_k, wave_NumberDeepWater_k, circular_Frequency_omega, vertical_coordinate_z, average_Water_Depth_h, direction_of_Wave_Propagation, coordinate_x_y, time_t):
     try:
         if direction_of_Wave_Propagation == "x":
             velocity_Potential_phi = (wave_Amplitude_zita * constant["g"] / circular_Frequency_omega) * math.cosh(waveNumber_finite_k * (vertical_coordinate_z + average_Water_Depth_h)) / math.cosh(waveNumber_finite_k * average_Water_Depth_h) * math.cos(circular_Frequency_omega * time_t - waveNumber_finite_k * coordinate_x_y)
