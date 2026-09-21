@@ -10,8 +10,12 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import math
+import io
+import base64
 import matplotlib.pyplot as plt
+from datetime import datetime
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import calculation
 from utils import *
@@ -205,6 +209,11 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
+        self.pdfButton = QtWidgets.QPushButton(self.groupBox_2)
+        self.pdfButton.setObjectName("pdfButton")
+        self.pdfButton.setText("Download PDF")
+        self.gridLayout.addWidget(self.pdfButton, 1, 1, 1, 1)
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -232,6 +241,8 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "THERMODYNAMIC LOAD"))
 
         self.pushButton.clicked.connect(self.run_calculation)
+        self.pdfButton.clicked.connect(self.download_pdf)
+        self.pdfButton.setEnabled(False)
 
         
     
@@ -267,6 +278,7 @@ class Ui_MainWindow(object):
                 self.result["average_water_depth"],
                 self.result["wave_period"]
             )
+            self.pdfButton.setEnabled(True)
 
 
         except ValueError:
@@ -279,49 +291,447 @@ class Ui_MainWindow(object):
 
     def displaythermodynamicsResults(self, result):
         self.textEdit.clear()
+        now = datetime.now()
         
         try:
-            self.textEdit.append("========== Thermodynamics ==========\n")
-            # self.textEdit.append(f"Result Updated: {now}")
-            self.textEdit.append("Version: 0.0.1\n")
+            html = f"""
+            <html>
+            <body>
 
-            # GEOMETRY
-            self.textEdit.append("----- Inputs -----")
-            self.textEdit.append(f"Wave Period (T)                                                      : {result['wave_period']:.3f}")
-            self.textEdit.append(f"Average Water Depth (h)                                              : {result['average_water_depth']:.3f}")
-            self.textEdit.append(f"Circular Frequency (ω)                                               : {result['circular_frequency']:.3f}")
-            self.textEdit.append(f"Wave Number (k)                                                      : {result['waveNumber_infinite_k']:.3f}")
-            self.textEdit.append(f"Wave Length (λ) - Deep Water                                         : {result['wave_length_deep_water_lambda']:.3f}")
-            self.textEdit.append(f"Wave Number (k) - Deep Water                                         : {result['waveNumber_finite_k']:.3f}")
-            self.textEdit.append(f"Wave Length (λ) - Deep Water                                         : {result['wave_length_deep_water_lambda']:.3f}")
-            self.textEdit.append(f"Wave Number (k) - Finite Depth Water                                 : {result['waveNumber_finite_k']:.3f}")
-            self.textEdit.append(f"Wave Length (λ) - Finite Depth Water                                 : {result['wave_length_finite_depth_lambda']:.3f}\n")
+            <div style="font-family: Arial; font-size: 10pt;">
 
-            self.textEdit.append(f"Velocity Potential and Wave Profile Calculations:\n")
-            self.textEdit.append(f"Velocity Potential (φ) - Deep / Infinite Water                       : {result['velocity_Potential_phi_infiniteDepth']:.3f}")
-            self.textEdit.append(f"Velocity Potential (φ) - Finite Depth Water                          : {result['velocity_Potential_phi_finiteDepth']:.3f}")
-            self.textEdit.append(f"Wave Profile (ζ) - Finite Depth Water                                : {result['wave_Profile_finite_zeta']:.3f}")
-            self.textEdit.append(f"Wave Profile (ζ) - Deep / Infinite Water                             : {result['wave_Profile_infinite_zeta']:.3f}\n")
+                <h3 style="margin-bottom: 5px;">
+                    Thermodynamics
+                </h3>
 
-            self.textEdit.append(f"Dynamic Pressure Calculations:\n")
-            self.textEdit.append(f"Dynamic Pressure (p) - Deep / Infinite Water                         : {result['dynamic_pressure_infiniteDepth']:.3f}")
-            self.textEdit.append(f"Dynamic Pressure (p) - Finite Depth Water                            : {result['dynamic_pressure_finiteDepth']:.3f}\n")
+                <p style="margin-top: 0px;">
+                    <b>Result Updated:</b> {now}<br>
+                    <b>Version:</b> 0.0.1
+                </p>
 
-            self.textEdit.append(f"X Component of Velocity and Acceleration for Finite Depth Water:\n")
-            self.textEdit.append(f"X Component of Velocity (u) - Finite Depth Water                     : {result['x_velocity_finiteDepth']:.3f}")
-            self.textEdit.append(f"X Component of Acceleration (a) - Finite Depth Water                 : {result['x_acceleration_finiteDepth']:.3f}")
-            self.textEdit.append(f"X Component of Velocity (u) - Deep / Infinite Water                  : {result['x_velocity_infiniteDepth']:.3f}")
-            self.textEdit.append(f"X Component of Acceleration (a) - Deep / Infinite Water              : {result['x_acceleration_infiniteDepth']:.3f}\n")
+                <h3 style="margin-top: 15px; margin-bottom: 8px;">
+                    Wave Calculations for Deep Water and Finite Depth Water
+                </h3>
 
-            self.textEdit.append(f"Z Component of Velocity and Acceleration for Finite Depth Water:\n")
-            self.textEdit.append(f"Z Component of Velocity (u) - Finite Depth Water                     : {result['z_velocity_finiteDepth']:.3f}")
-            self.textEdit.append(f"Z Component of Acceleration (a) - Finite Depth Water                 : {result['z_acceleration_finiteDepth']:.3f}")
-            self.textEdit.append(f"Z Component of Velocity (w) - Deep / Infinite Water                  : {result['z_velocity_infiniteDepth']:.3f}")
-            self.textEdit.append(f"Z Component of Acceleration (a) - Deep / Infinite Water              : {result['z_acceleration_infiniteDepth']:.3f}\n")
+                <table cellspacing="0" cellpadding="3">
+
+                    <tr>
+                        <td>Wave Period (T)</td>
+                        <td>:</td>
+                        <td>{result['wave_period']:.3f} seconds</td>
+                    </tr>
+
+                    <tr>
+                        <td>Average Water Depth (h)</td>
+                        <td>:</td>
+                        <td>{result['average_water_depth']:.3f} meters</td>
+                    </tr>
+
+                    <tr>
+                        <td>Circular Frequency (ω)</td>
+                        <td>:</td>
+                        <td>{result['circular_frequency']:.3f} rad/s</td>
+                    </tr>
+
+                    <tr>
+                        <td>Wave Number (k)</td>
+                        <td>:</td>
+                        <td>{result['waveNumber_infinite_k']:.3f}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Wave Length (λ) - Deep Water</td>
+                        <td>:</td>
+                        <td>{result['wave_length_deep_water_lambda']:.3f} meters</td>
+                    </tr>
+
+                    <tr>
+                        <td>Wave Number (k) - Finite Depth Water</td>
+                        <td>:</td>
+                        <td>{result['waveNumber_finite_k']:.3f}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Wave Length (λ) - Finite Depth Water</td>
+                        <td>:</td>
+                        <td>{result['wave_length_finite_depth_lambda']:.3f} meters</td>
+                    </tr>
+
+                </table>
+
+
+                <h3 style="margin-top: 18px; margin-bottom: 8px;">
+                    Velocity Potential and Wave Profile Calculations
+                </h3>
+
+                <table cellspacing="0" cellpadding="3">
+
+                    <tr>
+                        <td>Velocity Potential (φ) - Deep / Infinite Water</td>
+                        <td>:</td>
+                        <td>{result['velocity_Potential_phi_infiniteDepth']:.3f}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Velocity Potential (φ) - Finite Depth Water</td>
+                        <td>:</td>
+                        <td>{result['velocity_Potential_phi_finiteDepth']:.3f}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Wave Profile (ζ) - Finite Depth Water</td>
+                        <td>:</td>
+                        <td>{result['wave_Profile_finite_zeta']:.3f}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Wave Profile (ζ) - Deep / Infinite Water</td>
+                        <td>:</td>
+                        <td>{result['wave_Profile_infinite_zeta']:.3f}</td>
+                    </tr>
+
+                </table>
+
+
+                <h3 style="margin-top: 18px; margin-bottom: 8px;">
+                    Dynamic Pressure Calculations
+                </h3>
+
+                <table cellspacing="0" cellpadding="3">
+
+                    <tr>
+                        <td>Dynamic Pressure (p) - Deep / Infinite Water</td>
+                        <td>:</td>
+                        <td>{result['dynamic_pressure_infiniteDepth']:.3f}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Dynamic Pressure (p) - Finite Depth Water</td>
+                        <td>:</td>
+                        <td>{result['dynamic_pressure_finiteDepth']:.3f}</td>
+                    </tr>
+
+                </table>
+
+
+                <h3 style="margin-top: 18px; margin-bottom: 8px;">
+                    X Component of Velocity and Acceleration for Finite Depth Water
+                </h3>
+
+                <table cellspacing="0" cellpadding="3">
+
+                    <tr>
+                        <td>X Component of Velocity (u) - Finite Depth Water</td>
+                        <td>:</td>
+                        <td>{result['x_velocity_finiteDepth']:.3f}</td>
+                    </tr>
+
+                    <tr>
+                        <td>X Component of Acceleration (a) - Finite Depth Water</td>
+                        <td>:</td>
+                        <td>{result['x_acceleration_finiteDepth']:.3f}</td>
+                    </tr>
+
+                    <tr>
+                        <td>X Component of Velocity (u) - Deep / Infinite Water</td>
+                        <td>:</td>
+                        <td>{result['x_velocity_infiniteDepth']:.3f}</td>
+                    </tr>
+
+                    <tr>
+                        <td>X Component of Acceleration (a) - Deep / Infinite Water</td>
+                        <td>:</td>
+                        <td>{result['x_acceleration_infiniteDepth']:.3f}</td>
+                    </tr>
+
+                </table>
+
+
+                <h3 style="margin-top: 18px; margin-bottom: 8px;">
+                    Z Component of Velocity and Acceleration for Finite Depth Water
+                </h3>
+
+                <table cellspacing="0" cellpadding="3">
+
+                    <tr>
+                        <td>Z Component of Velocity (u) - Finite Depth Water</td>
+                        <td>:</td>
+                        <td>{result['z_velocity_finiteDepth']:.3f}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Z Component of Acceleration (a) - Finite Depth Water</td>
+                        <td>:</td>
+                        <td>{result['z_acceleration_finiteDepth']:.3f}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Z Component of Velocity (w) - Deep / Infinite Water</td>
+                        <td>:</td>
+                        <td>{result['z_velocity_infiniteDepth']:.3f}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Z Component of Acceleration (a) - Deep / Infinite Water</td>
+                        <td>:</td>
+                        <td>{result['z_acceleration_infiniteDepth']:.3f}</td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+            </body>
+            </html>
+            """
+
+            self.textEdit.setHtml(html)
 
 
         except Exception as e:
             print("error",e)
+
+
+    def get_graph_base64(self):
+    # Create a temporary PNG from the current graph
+        pixmap = self.graphicsView.grab()
+
+        buffer = QtCore.QBuffer()
+        buffer.open(QtCore.QIODevice.WriteOnly)
+        pixmap.save(buffer, "PNG")
+
+        image_data = bytes(buffer.data())
+        buffer.close()
+
+        return base64.b64encode(image_data).decode("utf-8")
+
+
+    
+# ___________________ Printing Dialog Code _________________________________
+
+    def download_pdf(self):
+
+        
+        try:
+            file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+                None,
+                "Save PDF",
+                "Thermodynamic_Load_Result.pdf",
+                "PDF Files (*.pdf)"
+            )
+
+            graph_base64 = self.get_graph_base64()
+            
+
+            if not file_path:
+                return
+
+            # Make sure .pdf extension exists
+            if not file_path.lower().endswith(".pdf"):
+                file_path += ".pdf"
+
+            # ---------------------------------------------------------
+            # Create PDF printer
+            # ---------------------------------------------------------
+            printer = QPrinter(QPrinter.HighResolution)
+
+            printer.setOutputFormat(QPrinter.PdfFormat)
+            printer.setOutputFileName(file_path)
+
+            # A4 page
+            printer.setPaperSize(QPrinter.A4)
+
+            # ---------------------------------------------------------
+            # Create HTML document
+            # ---------------------------------------------------------
+            document = QtGui.QTextDocument()
+
+            # ---------------------------------------------------------
+            # Get input values
+            # ---------------------------------------------------------
+            wave_period = self.wavePeriod_lineEdit.text()
+            wave_amplitude = self.wave_Amplitude_lineEdit.text()
+            water_depth = self.water_Depth_lineEdit.text()
+            coordinate = self.coordinates_lineEdit.text()
+            vertical_coordinate = self.vertical_coordinates_lineEdit.text()
+            time = self.time_lineEdit.text()
+
+            # ---------------------------------------------------------
+            # Get result section from QTextEdit
+            # ---------------------------------------------------------
+            result_html = self.textEdit.toHtml()
+
+            # ---------------------------------------------------------
+            # Create complete PDF HTML
+            # ---------------------------------------------------------
+            html = f"""
+            <html>
+            <head>
+                <style>
+                    body {{
+                        font-family: Arial, sans-serif;
+                        font-size: 10pt;
+                    }}
+
+                    .title {{
+                        text-align: center;
+                        font-size: 18pt;
+                        font-weight: bold;
+                    }}
+
+                    .subtitle {{
+                        text-align: center;
+                        font-size: 11pt;
+                    }}
+
+                    .section {{
+                        background-color: #16355d;
+                        color: white;
+                        padding: 6px;
+                        font-size: 13pt;
+                        font-weight: bold;
+                        margin-top: 15px;
+                    }}
+
+                    table {{
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 8px;
+                    }}
+
+                    td {{
+                        border: 1px solid #cccccc;
+                        padding: 6px;
+                    }}
+
+                    .label {{
+                        font-weight: bold;
+                        width: 45%;
+                    }}
+
+                    .footer {{
+                        text-align: center;
+                        font-size: 8pt;
+                        color: #666666;
+                        margin-top: 20px;
+                    }}
+
+                
+                    .header-title {{
+                        width: 50%;
+                        text-align: center;
+                        font-size: 22pt;
+                        font-weight: bold;
+                    }}
+                
+            
+                    .header-logo {{
+                        text-align: left;
+                        width:"20px";
+                        height:"15px";
+                    }}
+
+                    .graph {{
+                        width: 650px;
+                        display: block;
+                        margin: 0 auto;
+                    }}
+                </style>
+            </head>
+
+
+            <body>
+
+
+                <img class="header-logo" src="assets/Ashkam LOGO.png (1).png">
+
+                <div class="header-title" >THERMODYNAMIC LOAD</div>
+
+                <br>
+
+                <div class="section">
+                    INPUT
+                </div>
+
+                <table>
+                    <tr>
+                        <td class="label">Wave Period (T)</td>
+                        <td>{wave_period} seconds</td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">Wave Amplitude (ζ)</td>
+                        <td>{wave_amplitude} meters</td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">Average Water Depth (h)</td>
+                        <td>{water_depth} meters</td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">Coordinates of Wave Propagation (x)</td>
+                        <td>{coordinate}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">Vertical Coordinate (z)</td>
+                        <td>{vertical_coordinate}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">Time (t)</td>
+                        <td>{time} seconds</td>
+                    </tr>
+                </table>
+
+                <div class="section">
+                    RESULT
+                </div>
+
+                {result_html}
+
+                <div class="section">
+                    DISPERSION RELATION GRAPH
+                </div>
+
+                <div style="text-align: center;">
+                    <img class="graph"
+                        src="data:image/png;base64,{graph_base64}">
+                </div>
+
+                <br>
+
+                <div class="footer">
+                    © 2026 ASHKAM ENERGY Pvt. Ltd. | All Rights Reserved
+                </div>
+
+            </body>
+            </html>
+            """
+
+            # ---------------------------------------------------------
+            # Set HTML
+            # ---------------------------------------------------------
+            document.setHtml(html)
+
+            # ---------------------------------------------------------
+            # Print to PDF
+            # ---------------------------------------------------------
+            document.print_(printer)
+
+            QtWidgets.QMessageBox.information(
+                None,
+                "PDF Generated",
+                f"PDF saved successfully:\n\n{file_path}"
+            )
+
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(
+                None,
+                "PDF Error",
+                f"Unable to generate PDF:\n\n{str(e)}"
+            )
 
 
     def show_dispersion_graph(
