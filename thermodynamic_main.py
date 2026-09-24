@@ -211,7 +211,7 @@ class Ui_MainWindow(object):
 
         self.pdfButton = QtWidgets.QPushButton(self.groupBox_2)
         self.pdfButton.setObjectName("pdfButton")
-        self.pdfButton.setText("DownLOADS PDF")
+        self.pdfButton.setText("DOWNLOAD PDF")
         self.gridLayout.addWidget(self.pdfButton, 1, 1, 1, 1)
 
         self.retranslateUi(MainWindow)
@@ -235,13 +235,14 @@ class Ui_MainWindow(object):
         self.vertical_coordinates_lineEdit.setToolTip(_translate("MainWindow", "What is the vertical coordinate z (e.g., enter 5 for 5m depth)"))
         self.time_lineEdit.setToolTip(_translate("MainWindow", "What is the time? (Enter t)"))
         self.pushButton.setText(_translate("MainWindow", "Process"))
+        self.pdfButton.setText(_translate("MainWindow", "DOWNLOAD PDF"))
         self.Result_label.setText(_translate("MainWindow", "RESULT"))
         self.label_6.setText(_translate("MainWindow", "INPUT"))
         self.label_12.setText(_translate("MainWindow", "© 2026 ASHKAM ENERGY Pvt. Ltd. | All Rights Reserved"))
         self.label.setText(_translate("MainWindow", "HYDRODYNAMIC LOADS"))
 
         self.pushButton.clicked.connect(self.run_calculation)
-        self.pdfButton.clicked.connect(self.downLOADS_pdf)
+        self.pdfButton.clicked.connect(self.DOWNLOAD_pdf)
         self.pdfButton.setEnabled(False)
 
         
@@ -509,7 +510,7 @@ class Ui_MainWindow(object):
     
 # ___________________ Printing Dialog Code _________________________________
 
-    def downLOADS_pdf(self):
+    def DOWNLOAD_pdf(self):
 
         
         try:
