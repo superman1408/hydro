@@ -831,7 +831,7 @@ class Ui_MainWindow(object):
                 target_value,
                 'go',
                 markersize=8,
-                label=f'Solved k = {waveNumber_finite_k:.4f}'
+                label=f'Solved k = {waveNumber_finite_k:.4f} m⁻¹'
             )
 
             # =========================================================
