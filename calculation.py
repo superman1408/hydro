@@ -105,12 +105,12 @@ def sea_environment_calculation(frontend):
                     "do not satisfy the dispersion relation."
                 )
 
-            print("Left side deep (ω²/g):", left_side_deep)
-            print("Right side deep (k):", right_side_deep)
-            print("Difference deep:", abs(left_side_deep - right_side_deep))
-            print("Left side finite (ω²/g):", left_side_finite)
-            print("Right side finite (k tanh(kh)):", right_side_finite)
-            print("Difference finite:", abs(left_side_finite - right_side_finite))
+            # print("Left side deep (ω²/g):", left_side_deep)
+            # print("Right side deep (k):", right_side_deep)
+            # print("Difference deep:", abs(left_side_deep - right_side_deep))
+            # print("Left side finite (ω²/g):", left_side_finite)
+            # print("Right side finite (k tanh(kh)):", right_side_finite)
+            # print("Difference finite:", abs(left_side_finite - right_side_finite))
             return {
                 "left_side_deep": left_side_deep,
                 "right_side_deep": right_side_deep,
@@ -440,59 +440,63 @@ def sea_environment_calculation(frontend):
 
         # --------------------------------Display Results---------------------------------------------
         print("\nResults:---------------------------------------------------------------------------------")
-        print("Wave Calculations for Deep Water and Finite Depth Water")
-        print(check_wave_number_with_circular_frequency)
+        print("This application successfully simulates: Velocity Potential, Dispersion Relation, Wave Profile, Pressure, Velocity and Acceleration for regular sinusoidal propagation waves on finite and infinite water depth according to Linear Theory.")
+        # print(check_wave_number_with_circular_frequency)
 
-        print("-------------------------------------------------------------")
-        print(f"Wave Period (T): {wave_period} seconds")
-        print(f"Average Water Depth (h): {average_water_depth} meters")
-        print(f"Circular Frequency (ω): {circular_frequency} rad/s")
-        print(f"Wave Number (k) - Deep Water: {waveNumber_infinite_k}")
-        print(f"Wave Length (λ) - Deep Water: {wave_length_deep_water_lambda} meters")
-        print(f"Wave Number (k) - Finite Depth Water: {waveNumber_finite_k}")
-        print(f"Wave Length (λ) - Finite Depth Water: {wave_length_finite_depth_lambda} meters")
+        # print("-------------------------------------------------------------")
+        # print(f"Wave Period (T): {wave_period} seconds")
+        # print(f"Average Water Depth (h): {average_water_depth} meters")
+        # print(f"Circular Frequency (ω): {circular_frequency} rad/s")
+        # print(f"Wave Number (k) - Deep Water: {waveNumber_infinite_k}")
+        # print(f"Wave Length (λ) - Deep Water: {wave_length_deep_water_lambda} meters")
+        # print(f"Wave Number (k) - Finite Depth Water: {waveNumber_finite_k}")
+        # print(f"Wave Length (λ) - Finite Depth Water: {wave_length_finite_depth_lambda} meters")
 
-        print("-------------------------------------------------------------")
-        print("Velocity Potential and Wave Profile Calculations:")
-        print(f"Velocity Potential (φ) - Deep / Infinite Water: {velocity_Potential_phi_infiniteDepth}")
-        print(f"Velocity Potential (φ) - Finite Depth Water: {velocity_Potential_phi_finiteDepth}")
+        # print("-------------------------------------------------------------")
+        # print("Velocity Potential and Wave Profile Calculations:")
+        # print(f"Velocity Potential (φ) - Deep / Infinite Water: {velocity_Potential_phi_infiniteDepth}")
+        # print(f"Velocity Potential (φ) - Finite Depth Water: {velocity_Potential_phi_finiteDepth}")
         # print(f"Wave Profile (ζ) - Finite Depth Water and Deep / Infinite Water : {wave_Profile}")
-        print(f"Wave Profile (ζ) - Finite Depth Water: {wave_Profile_finite_zeta}")
-        print(f"Wave Profile (ζ) - Deep / Infinite Water: {wave_Profile_infinite_zeta}")
+        # print(f"Wave Profile (ζ) - Finite Depth Water: {wave_Profile_finite_zeta}")
+        # print(f"Wave Profile (ζ) - Deep / Infinite Water: {wave_Profile_infinite_zeta}")
 
-        print("-------------------------------------------------------------")
-        print("Dynamic Pressure Calculations:")
-        print(f"Dynamic Pressure (p) - Deep / Infinite Water: {dynamic_pressure_infiniteDepth}")
-        print(f"Dynamic Pressure (p) - Finite Depth Water: {dynamic_pressure_finiteDepth}")
+        # print("-------------------------------------------------------------")
+        # print("Dynamic Pressure Calculations:")
+        # print(f"Dynamic Pressure (p) - Deep / Infinite Water: {dynamic_pressure_infiniteDepth}")
+        # print(f"Dynamic Pressure (p) - Finite Depth Water: {dynamic_pressure_finiteDepth}")
 
 
-        print("-------------------------------------------------------------")
-        print("X Component of Velocity and Acceleration for Finite Depth Water:")
+        # print("-------------------------------------------------------------")
+        # print("X Component of Velocity and Acceleration for Finite Depth Water:")
         x_velocity_finiteDepth = x_component_velocity_finiteDepth(circular_frequency, wave_amplitude, waveNumber_finite_k, average_water_depth, vertical_coordinate_z, direction_of_Wave_Propagation, coordinate_x_y, time_t)
         x_acceleration_finiteDepth = x_component_acceleration_finiteDepth(circular_frequency, wave_amplitude, waveNumber_finite_k, average_water_depth, vertical_coordinate_z, direction_of_Wave_Propagation, coordinate_x_y, time_t)
-        print(f"X Component of Velocity (u) - Finite Depth Water: {x_velocity_finiteDepth}")
-        print(f"X Component of Acceleration (a) - Finite Depth Water: {x_acceleration_finiteDepth}")
+        # print(f"X Component of Velocity (u) - Finite Depth Water: {x_velocity_finiteDepth}")
+        # print(f"X Component of Acceleration (a) - Finite Depth Water: {x_acceleration_finiteDepth}")
         x_velocity_infiniteDepth = x_component_velocity_infiniteDepth(circular_frequency, wave_amplitude, waveNumber_infinite_k, vertical_coordinate_z, direction_of_Wave_Propagation, coordinate_x_y, time_t)
         x_acceleration_infiniteDepth = x_component_acceleration_infiniteDepth(circular_frequency, wave_amplitude, waveNumber_infinite_k, vertical_coordinate_z, direction_of_Wave_Propagation, coordinate_x_y, time_t)
-        print(f"X Component of Velocity (u) - Deep / Infinite Water: {x_velocity_infiniteDepth}")
-        print(f"X Component of Acceleration (a) - Deep / Infinite Water: {x_acceleration_infiniteDepth}")
+        # print(f"X Component of Velocity (u) - Deep / Infinite Water: {x_velocity_infiniteDepth}")
+        # print(f"X Component of Acceleration (a) - Deep / Infinite Water: {x_acceleration_infiniteDepth}")
 
 
-        print("-------------------------------------------------------------")
-        print("Z Component of Velocity and Acceleration for Finite Depth Water:")
+        # print("-------------------------------------------------------------")
+        # print("Z Component of Velocity and Acceleration for Finite Depth Water:")
         z_velocity_finiteDepth = z_component_velocity_finiteDepth(circular_frequency, wave_amplitude, waveNumber_finite_k, average_water_depth, vertical_coordinate_z, direction_of_Wave_Propagation, coordinate_x_y, time_t)
         z_acceleration_finiteDepth = z_component_acceleration_finiteDepth(circular_frequency, wave_amplitude, waveNumber_finite_k, average_water_depth, vertical_coordinate_z, direction_of_Wave_Propagation, coordinate_x_y, time_t)
-        print(f"Z Component of Velocity (w) - Finite Depth Water: {z_velocity_finiteDepth}")
-        print(f"Z Component of Acceleration (a) - Finite Depth Water: {z_acceleration_finiteDepth}")
+        # print(f"Z Component of Velocity (w) - Finite Depth Water: {z_velocity_finiteDepth}")
+        # print(f"Z Component of Acceleration (a) - Finite Depth Water: {z_acceleration_finiteDepth}")
         z_velocity_infiniteDepth = z_component_velocity_infiniteDepth(circular_frequency, wave_amplitude, waveNumber_infinite_k, vertical_coordinate_z, direction_of_Wave_Propagation, coordinate_x_y, time_t)
         z_acceleration_infiniteDepth = z_component_acceleration_infiniteDepth(circular_frequency, wave_amplitude, waveNumber_infinite_k, vertical_coordinate_z, direction_of_Wave_Propagation, coordinate_x_y, time_t)
-        print(f"Z Component of Velocity (w) - Deep / Infinite Water: {z_velocity_infiniteDepth}")
-        print(f"Z Component of Acceleration (a) - Deep / Infinite Water: {z_acceleration_infiniteDepth}")
+        # print(f"Z Component of Velocity (w) - Deep / Infinite Water: {z_velocity_infiniteDepth}")
+        # print(f"Z Component of Acceleration (a) - Deep / Infinite Water: {z_acceleration_infiniteDepth}")
 
 
         # ============================================================
         # RESULT DICTIONARY
         # ============================================================
+        
+        print("\n======================================================")
+        print("Hydrodynamic Loads")
+        print("======================================================")
 
         result = {
 
@@ -533,7 +537,7 @@ def sea_environment_calculation(frontend):
         }
 
         print("\n======================================================")
-        print("Thermoddynamics")
+        print("Closing the Application-----------Best Regards ASHKAM ENERGY PVT LTD")
         print("======================================================")
 
 

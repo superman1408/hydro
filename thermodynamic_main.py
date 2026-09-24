@@ -211,7 +211,7 @@ class Ui_MainWindow(object):
 
         self.pdfButton = QtWidgets.QPushButton(self.groupBox_2)
         self.pdfButton.setObjectName("pdfButton")
-        self.pdfButton.setText("Download PDF")
+        self.pdfButton.setText("DownLOADS PDF")
         self.gridLayout.addWidget(self.pdfButton, 1, 1, 1, 1)
 
         self.retranslateUi(MainWindow)
@@ -219,7 +219,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Thermodynamic Load"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "HYDRODYNAMIC LOADS"))
         self.label_2.setText(_translate("MainWindow", "Wave Period (T) (seconds)"))
         self.label_3.setText(_translate("MainWindow", "Wave Amplitude (ζ) (meters)"))
         self.label_4.setText(_translate("MainWindow", "Average Water Depth (h) (meters)"))
@@ -238,10 +238,10 @@ class Ui_MainWindow(object):
         self.Result_label.setText(_translate("MainWindow", "RESULT"))
         self.label_6.setText(_translate("MainWindow", "INPUT"))
         self.label_12.setText(_translate("MainWindow", "© 2026 ASHKAM ENERGY Pvt. Ltd. | All Rights Reserved"))
-        self.label.setText(_translate("MainWindow", "THERMODYNAMIC LOAD"))
+        self.label.setText(_translate("MainWindow", "HYDRODYNAMIC LOADS"))
 
         self.pushButton.clicked.connect(self.run_calculation)
-        self.pdfButton.clicked.connect(self.download_pdf)
+        self.pdfButton.clicked.connect(self.downLOADS_pdf)
         self.pdfButton.setEnabled(False)
 
         
@@ -269,7 +269,7 @@ class Ui_MainWindow(object):
             print("Calculation result:", self.result)
 
 
-            self.displaythermodynamicsResults(self.result)
+            self.displayHYDRODYNAMICsResults(self.result)
 
             self.show_dispersion_graph(
                 self.result["waveNumber_infinite_k"],
@@ -289,7 +289,7 @@ class Ui_MainWindow(object):
             )
 
 
-    def displaythermodynamicsResults(self, result):
+    def displayHYDRODYNAMICsResults(self, result):
         self.textEdit.clear()
         now = datetime.now()
         
@@ -301,7 +301,7 @@ class Ui_MainWindow(object):
             <div style="font-family: Arial; font-size: 10pt;">
 
                 <h3 style="margin-bottom: 5px;">
-                    Thermodynamics
+                    HYDRODYNAMIC LOADS
                 </h3>
 
                 <p style="margin-top: 0px;">
@@ -336,7 +336,7 @@ class Ui_MainWindow(object):
                     <tr>
                         <td>Wave Number (k)</td>
                         <td>:</td>
-                        <td>{result['waveNumber_infinite_k']:.3f}</td>
+                        <td>{result['waveNumber_infinite_k']:.3f} m⁻¹</td>
                     </tr>
 
                     <tr>
@@ -348,7 +348,7 @@ class Ui_MainWindow(object):
                     <tr>
                         <td>Wave Number (k) - Finite Depth Water</td>
                         <td>:</td>
-                        <td>{result['waveNumber_finite_k']:.3f}</td>
+                        <td>{result['waveNumber_finite_k']:.3f} m⁻¹</td>
                     </tr>
 
                     <tr>
@@ -369,25 +369,25 @@ class Ui_MainWindow(object):
                     <tr>
                         <td>Velocity Potential (φ) - Deep / Infinite Water</td>
                         <td>:</td>
-                        <td>{result['velocity_Potential_phi_infiniteDepth']:.3f}</td>
+                        <td>{result['velocity_Potential_phi_infiniteDepth']:.3f} m²/s</td>
                     </tr>
 
                     <tr>
                         <td>Velocity Potential (φ) - Finite Depth Water</td>
                         <td>:</td>
-                        <td>{result['velocity_Potential_phi_finiteDepth']:.3f}</td>
+                        <td>{result['velocity_Potential_phi_finiteDepth']:.3f} m²/s</td>
                     </tr>
 
                     <tr>
                         <td>Wave Profile (ζ) - Finite Depth Water</td>
                         <td>:</td>
-                        <td>{result['wave_Profile_finite_zeta']:.3f}</td>
+                        <td>{result['wave_Profile_finite_zeta']:.3f} meters</td>
                     </tr>
 
                     <tr>
                         <td>Wave Profile (ζ) - Deep / Infinite Water</td>
                         <td>:</td>
-                        <td>{result['wave_Profile_infinite_zeta']:.3f}</td>
+                        <td>{result['wave_Profile_infinite_zeta']:.3f} meters</td>
                     </tr>
 
                 </table>
@@ -402,13 +402,13 @@ class Ui_MainWindow(object):
                     <tr>
                         <td>Dynamic Pressure (p) - Deep / Infinite Water</td>
                         <td>:</td>
-                        <td>{result['dynamic_pressure_infiniteDepth']:.3f}</td>
+                        <td>{result['dynamic_pressure_infiniteDepth']:.3f} Pa</td>
                     </tr>
 
                     <tr>
                         <td>Dynamic Pressure (p) - Finite Depth Water</td>
                         <td>:</td>
-                        <td>{result['dynamic_pressure_finiteDepth']:.3f}</td>
+                        <td>{result['dynamic_pressure_finiteDepth']:.3f} Pa</td>
                     </tr>
 
                 </table>
@@ -423,25 +423,25 @@ class Ui_MainWindow(object):
                     <tr>
                         <td>X Component of Velocity (u) - Finite Depth Water</td>
                         <td>:</td>
-                        <td>{result['x_velocity_finiteDepth']:.3f}</td>
+                        <td>{result['x_velocity_finiteDepth']:.3f} m/s</td>
                     </tr>
 
                     <tr>
                         <td>X Component of Acceleration (a) - Finite Depth Water</td>
                         <td>:</td>
-                        <td>{result['x_acceleration_finiteDepth']:.3f}</td>
+                        <td>{result['x_acceleration_finiteDepth']:.3f} m/s²</td>
                     </tr>
 
                     <tr>
                         <td>X Component of Velocity (u) - Deep / Infinite Water</td>
                         <td>:</td>
-                        <td>{result['x_velocity_infiniteDepth']:.3f}</td>
+                        <td>{result['x_velocity_infiniteDepth']:.3f} m/s</td>
                     </tr>
 
                     <tr>
                         <td>X Component of Acceleration (a) - Deep / Infinite Water</td>
                         <td>:</td>
-                        <td>{result['x_acceleration_infiniteDepth']:.3f}</td>
+                        <td>{result['x_acceleration_infiniteDepth']:.3f} m/s²</td>
                     </tr>
 
                 </table>
@@ -456,25 +456,25 @@ class Ui_MainWindow(object):
                     <tr>
                         <td>Z Component of Velocity (u) - Finite Depth Water</td>
                         <td>:</td>
-                        <td>{result['z_velocity_finiteDepth']:.3f}</td>
+                        <td>{result['z_velocity_finiteDepth']:.3f} m/s</td>
                     </tr>
 
                     <tr>
                         <td>Z Component of Acceleration (a) - Finite Depth Water</td>
                         <td>:</td>
-                        <td>{result['z_acceleration_finiteDepth']:.3f}</td>
+                        <td>{result['z_acceleration_finiteDepth']:.3f} m/s²</td>
                     </tr>
 
                     <tr>
                         <td>Z Component of Velocity (w) - Deep / Infinite Water</td>
                         <td>:</td>
-                        <td>{result['z_velocity_infiniteDepth']:.3f}</td>
+                        <td>{result['z_velocity_infiniteDepth']:.3f} m/s</td>
                     </tr>
 
                     <tr>
                         <td>Z Component of Acceleration (a) - Deep / Infinite Water</td>
                         <td>:</td>
-                        <td>{result['z_acceleration_infiniteDepth']:.3f}</td>
+                        <td>{result['z_acceleration_infiniteDepth']:.3f} m/s²</td>
                     </tr>
 
                 </table>
@@ -509,14 +509,14 @@ class Ui_MainWindow(object):
     
 # ___________________ Printing Dialog Code _________________________________
 
-    def download_pdf(self):
+    def downLOADS_pdf(self):
 
         
         try:
             file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
                 None,
                 "Save PDF",
-                "Thermodynamic_Load_Result.pdf",
+                "HYDRODYNAMIC_LOADS_Result.pdf",
                 "PDF Files (*.pdf)"
             )
 
@@ -645,7 +645,7 @@ class Ui_MainWindow(object):
 
                 <img class="header-logo" src="assets/Ashkam LOGO.png (1).png">
 
-                <div class="header-title" >THERMODYNAMIC LOAD</div>
+                <div class="header-title" >HYDRODYNAMIC LOADS</div>
 
                 <br>
 
@@ -840,7 +840,7 @@ class Ui_MainWindow(object):
 
             ax.set_title(
                 f'Transcendental Dispersion Relation Solution\n'
-                f'(T = {wave_period}s, h = {average_water_depth}m)',
+                f'(T = {wave_period} seconds, h = {average_water_depth} meter)',
                 fontsize=12
             )
 
