@@ -509,11 +509,14 @@ class Ui_MainWindow(object):
 
     
 # ___________________ Printing Dialog Code _________________________________
-
     def DOWNLOAD_pdf(self):
 
-        
         try:
+
+            # =========================================================
+            # Select PDF file location
+            # =========================================================
+
             file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
                 None,
                 "Save PDF",
@@ -521,35 +524,24 @@ class Ui_MainWindow(object):
                 "PDF Files (*.pdf)"
             )
 
-            graph_base64 = self.get_graph_base64()
-            
-
             if not file_path:
                 return
 
-            # Make sure .pdf extension exists
             if not file_path.lower().endswith(".pdf"):
                 file_path += ".pdf"
 
-            # ---------------------------------------------------------
-            # Create PDF printer
-            # ---------------------------------------------------------
-            printer = QPrinter(QPrinter.HighResolution)
 
-            printer.setOutputFormat(QPrinter.PdfFormat)
-            printer.setOutputFileName(file_path)
+            # =========================================================
+            # Get graph as Base64
+            # =========================================================
 
-            # A4 page
-            printer.setPaperSize(QPrinter.A4)
+            graph_base64 = self.get_graph_base64()
 
-            # ---------------------------------------------------------
-            # Create HTML document
-            # ---------------------------------------------------------
-            document = QtGui.QTextDocument()
 
-            # ---------------------------------------------------------
+            # =========================================================
             # Get input values
-            # ---------------------------------------------------------
+            # =========================================================
+
             wave_period = self.wavePeriod_lineEdit.text()
             wave_amplitude = self.wave_Amplitude_lineEdit.text()
             water_depth = self.water_Depth_lineEdit.text()
@@ -557,169 +549,897 @@ class Ui_MainWindow(object):
             vertical_coordinate = self.vertical_coordinates_lineEdit.text()
             time = self.time_lineEdit.text()
 
-            # ---------------------------------------------------------
-            # Get result section from QTextEdit
-            # ---------------------------------------------------------
-            result_html = self.textEdit.toHtml()
 
-            # ---------------------------------------------------------
-            # Create complete PDF HTML
-            # ---------------------------------------------------------
+            # =========================================================
+            # Get calculation result
+            # =========================================================
+
+            result = self.result
+
+
+            # =========================================================
+            # Create PDF printer
+            # =========================================================
+
+            printer = QPrinter(QPrinter.HighResolution)
+
+            printer.setOutputFormat(QPrinter.PdfFormat)
+            printer.setOutputFileName(file_path)
+            printer.setPaperSize(QPrinter.A4)
+
+
+            # =========================================================
+            # Create HTML document
+            # =========================================================
+
+            document = QtGui.QTextDocument()
+
+
+            # =========================================================
+            # Complete PDF HTML
+            # =========================================================
+
             html = f"""
+            <!DOCTYPE html>
+
             <html>
+
             <head>
-                <style>
+
+            <meta charset="UTF-8">
+
+            <style>
+
+                * {{
+                    box-sizing: border-box;
+                }}
+
+                body {{
+                    margin: 0;
+                    padding: 20px;
+                    background: white;
+                    font-family: Arial, Helvetica, sans-serif;
+                    font-size: 9pt;
+                    color: #222222;
+                }}
+
+
+                /* =====================================================
+                MAIN REPORT
+                ===================================================== */
+
+                .report {{
+                    width: 100%;
+                    background: #ffffff;
+                }}
+
+
+                /* =====================================================
+                HEADER
+                ===================================================== */
+
+                .header {{
+                    width: 100%;
+                    border-bottom: 1.5px solid #16355d;
+                    padding-bottom: 10px;
+                    margin-bottom: 14px;
+                }}
+
+                .header-table {{
+                    width: 100%;
+                    border-collapse: collapse;
+                    table-layout: fixed;
+                }}
+
+                .header-table td {{
+                    border: none;
+                    padding: 0;
+                    vertical-align: middle;
+                }}
+
+                .logo-cell {{
+                    width: 20%;
+                    text-align: left;
+                }}
+
+                .header-logo {{
+                    width: 20px;
+                    height:10px;
+                    height: auto;
+                    display: block;
+                }}
+
+                .title-cell {{
+                    width: 50%;
+                    text-align: center;
+                }}
+
+                .company-name {{
+                    font-size: 9pt;
+                    font-weight: bold;
+                    color: #16355d;
+                    letter-spacing: 0.4px;
+                }}
+
+                .header-title {{
+                    margin-top: 3px;
+                    font-size: 19pt;
+                    line-height: 1.1;
+                    font-weight: bold;
+                    color: #16355d;
+                }}
+
+                .subtitle {{
+                    margin-top: 4px;
+                    font-size: 7pt;
+                    color: #666666;
+                }}
+
+                .info-cell {{
+                    width: 25%;
+                    text-align: right;
+                    font-size: 7pt;
+                    line-height: 1.4;
+                    color: #555555;
+                }}
+
+                .info-title {{
+                    font-weight: bold;
+                    color: #16355d;
+                }}
+
+
+                /* =====================================================
+                SECTION TITLE
+                ===================================================== */
+
+                .section {{
+                    width: 100%;
+                    margin-top: 12px;
+                    margin-bottom: 6px;
+
+                    padding: 6px 8px;
+
+                    background-color: #16355d;
+                    color: white;
+
+                    font-size: 9pt;
+                    font-weight: bold;
+                    letter-spacing: 0.2px;
+
+                    border-left: 4px solid #0d2745;
+                }}
+
+
+                /* =====================================================
+                INPUT TABLE
+                ===================================================== */
+
+                .input-table {{
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 5px;
+                }}
+
+                .input-table td {{
+                    border: 1px solid #d0d5db;
+                    padding: 5px 7px;
+                    vertical-align: middle;
+                    font-size: 10pt;
+                }}
+
+                .input-label {{
+                    width: 45%;
+                    font-weight: bold;
+                    background-color: #eef1f5;
+                    color: #333333;
+                }}
+
+                .input-value {{
+                    width: 55%;
+                    color: #222222;
+                }}
+
+
+                /* =====================================================
+                RESULT TABLE
+                ===================================================== */
+
+                .result-table {{
+                    width: 100%;
+                    border-collapse: collapse;
+                    table-layout: fixed;
+                }}
+
+                .result-table th {{
+                    background-color: #16355d;
+                    color: white;
+
+                    padding: 6px 7px;
+
+                    font-size: 10pt;
+                    font-weight: bold;
+
+                    text-align: left;
+
+                    border-right: 1px solid #ffffff;
+                }}
+
+                .result-table th:last-child {{
+                    border-right: none;
+                }}
+
+                .result-table td {{
+                    padding: 6px 7px;
+
+                    border-bottom: 1px solid #d0d5db;
+                    border-right: 1px solid #d0d5db;
+
+                    font-size: 10pt;
+                    vertical-align: middle;
+                }}
+
+                .result-table td:last-child {{
+                    border-right: none;
+                }}
+
+                .result-table tr:nth-child(even) td {{
+                    background-color: #f8f9fb;
+                }}
+
+                .result-parameter {{
+                    width: 48%;
+                }}
+
+                .result-value {{
+                    width: 32%;
+                    text-align: right;
+                    font-family: "Courier New", monospace;
+                    font-weight: bold;
+                    color: #16355d;
+                    background-color: #eef4fa;
+                }}
+
+                .result-unit {{
+                    width: 20%;
+                    color: #555555;
+                }}
+
+
+                /* =====================================================
+                RESULT SUMMARY
+                ===================================================== */
+
+                .result-summary {{
+                    margin-top: 7px;
+
+                    padding: 7px 9px;
+
+                    background-color: #f2f4f7;
+
+                    border-left: 3px solid #16355d;
+
+                    font-size: 8pt;
+                    color: #444444;
+                }}
+
+                .result-summary strong {{
+                    color: #16355d;
+                }}
+
+
+                /* =====================================================
+                GRAPH
+                ===================================================== */
+
+                .graph-container {{
+                    width: 100%;
+
+                    padding: 8px;
+
+                    border: 1px solid #d0d5db;
+
+                    text-align: center;
+
+                    background-color: #ffffff;
+                }}
+
+                .graph {{
+                    width: 600px;
+                    max-width: 100%;
+                    height: auto;
+
+                    display: block;
+
+                    margin: 0 auto;
+                }}
+
+
+                /* =====================================================
+                FOOTER
+                ===================================================== */
+
+                .footer {{
+                    width: 100%;
+
+                    border-top: 1px solid #16355d;
+
+                    margin-top: 14px;
+                    padding-top: 6px;
+
+                    text-align: center;
+
+                    font-size: 8pt;
+                    color: #666666;
+                }}
+
+                .footer-company {{
+                    font-weight: bold;
+                    color: #16355d;
+                }}
+
+
+                /* =====================================================
+                PRINT
+                ===================================================== */
+
+                @media print {{
+
                     body {{
-                        font-family: Arial, sans-serif;
-                        font-size: 10pt;
-                    }}
-
-                    .title {{
-                        text-align: center;
-                        font-size: 18pt;
-                        font-weight: bold;
-                    }}
-
-                    .subtitle {{
-                        text-align: center;
-                        font-size: 11pt;
+                        margin: 0;
+                        padding: 10px;
+                        background: white;
                     }}
 
                     .section {{
-                        background-color: #16355d;
-                        color: white;
-                        padding: 6px;
-                        font-size: 13pt;
-                        font-weight: bold;
-                        margin-top: 15px;
+                        break-after: avoid;
                     }}
 
-                    table {{
-                        width: 100%;
-                        border-collapse: collapse;
-                        margin-top: 8px;
+                    .input-table,
+                    .result-table,
+                    .graph-container {{
+                        break-inside: avoid;
                     }}
 
-                    td {{
-                        border: 1px solid #cccccc;
-                        padding: 6px;
-                    }}
+                }}
 
-                    .label {{
-                        font-weight: bold;
-                        width: 45%;
-                    }}
+            </style>
 
-                    .footer {{
-                        text-align: center;
-                        font-size: 8pt;
-                        color: #666666;
-                        margin-top: 20px;
-                    }}
-
-                
-                    .header-title {{
-                        width: 50%;
-                        text-align: center;
-                        font-size: 22pt;
-                        font-weight: bold;
-                    }}
-                
-            
-                    .header-logo {{
-                        text-align: left;
-                        width:"20px";
-                        height:"15px";
-                    }}
-
-                    .graph {{
-                        width: 650px;
-                        display: block;
-                        margin: 0 auto;
-                    }}
-                </style>
             </head>
 
 
             <body>
 
+            <div class="report">
 
-                <img class="header-logo" src="assets/Ashkam LOGO.png (1).png">
 
-                <div class="header-title" >HYDRODYNAMIC LOADS</div>
+                <!-- =====================================================
+                    HEADER
+                ===================================================== -->
 
-                <br>
+                <div class="header">
+
+                    <table class="header-table">
+
+                        <tr>
+
+                            <!-- LOGO -->
+                            <td class="logo-cell">
+
+                                <img
+                                    class="header-logo"
+                                    src="assets/Logo.png"
+                                    alt="Ashkam Energy"
+                                >
+
+                            </td>
+
+
+                            <!-- TITLE -->
+                            <td class="title-cell">
+
+                                <div class="company-name">
+                                    ASHKAM ENERGY PVT. LTD.
+                                </div>
+
+                                <div class="header-title">
+                                    HYDRODYNAMIC LOADS
+                                </div>
+
+                                <div class="subtitle">
+                                    Engineering Calculation &amp; Analysis Report
+                                </div>
+
+                            </td>
+
+
+                            <!-- REPORT INFORMATION -->
+                            <td class="info-cell">
+
+                                <span class="info-title">
+                                    CALCULATION REPORT
+                                </span>
+
+                                <br>
+
+                                Hydrodynamic Analysis
+
+                                <br>
+
+                                Year: 2026
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+
+                <!-- =====================================================
+                    INPUT
+                    ===================================================== -->
 
                 <div class="section">
                     INPUT
                 </div>
 
-                <table>
-                    <tr>
-                        <td class="label">Wave Period (T)</td>
-                        <td>{wave_period} seconds</td>
-                    </tr>
+
+                <table class="input-table">
 
                     <tr>
-                        <td class="label">Wave Amplitude (ζ)</td>
-                        <td>{wave_amplitude} meters</td>
+
+                        <td class="input-label">
+                            Wave Period (T)
+                        </td>
+
+                        <td class="input-value">
+                            {wave_period} seconds
+                        </td>
+
                     </tr>
 
-                    <tr>
-                        <td class="label">Average Water Depth (h)</td>
-                        <td>{water_depth} meters</td>
-                    </tr>
 
                     <tr>
-                        <td class="label">Coordinates of Wave Propagation (x)</td>
-                        <td>{coordinate}</td>
+
+                        <td class="input-label">
+                            Wave Amplitude (ζ)
+                        </td>
+
+                        <td class="input-value">
+                            {wave_amplitude} meters
+                        </td>
+
                     </tr>
 
-                    <tr>
-                        <td class="label">Vertical Coordinate (z)</td>
-                        <td>{vertical_coordinate}</td>
-                    </tr>
 
                     <tr>
-                        <td class="label">Time (t)</td>
-                        <td>{time} seconds</td>
+
+                        <td class="input-label">
+                            Average Water Depth (h)
+                        </td>
+
+                        <td class="input-value">
+                            {water_depth} meters
+                        </td>
+
                     </tr>
+
+
+                    <tr>
+
+                        <td class="input-label">
+                            Coordinates of Wave Propagation (x)                                                                          
+                        </td>
+
+                        <td class="input-value">
+                            {coordinate}
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td class="input-label">
+                            Vertical Coordinate (z)
+                        </td>
+
+                        <td class="input-value">
+                            {vertical_coordinate}
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td class="input-label">
+                            Time (t)
+                        </td>
+
+                        <td class="input-value">
+                            {time} seconds
+                        </td>
+
+                    </tr>
+
                 </table>
+
+
+                <!-- =====================================================
+                    RESULT
+                ===================================================== -->
 
                 <div class="section">
                     RESULT
                 </div>
 
-                {result_html}
+
+                <table class="result-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th class="result-parameter">
+                                Parameter
+                            </th>
+
+                            <th class="result-value">
+                                Calculated Value
+                            </th>
+
+                            <th class="result-unit">
+                                Unit
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr>
+                            <td>Circular Frequency (ω)</td>
+                            <td class="value">
+                                {result['circular_frequency']:.3f}
+                            </td>
+                            <td>rad/s</td>
+                        </tr>
+
+                        <tr>
+                            <td>Wave Number (k)</td>
+                            <td class="value">
+                                {result['waveNumber_infinite_k']:.3f}
+                            </td>
+                            <td>m⁻¹</td>
+                        </tr>
+
+                        <tr>
+                            <td>Wave Length (λ) - Deep Water</td>
+                            <td class="value">
+                                {result['wave_length_deep_water_lambda']:.3f}
+                            </td>
+                            <td>meters</td>
+                        </tr>
+
+                        <tr>
+                            <td>Wave Number (k) - Finite Depth Water</td>
+                            <td class="value">
+                                {result['waveNumber_finite_k']:.3f}
+                            </td>
+                            <td>m⁻¹</td>
+                        </tr>
+
+                        <tr>
+                            <td>Wave Length (λ) - Finite Depth Water</td>
+                            <td class="value">
+                                {result['wave_length_finite_depth_lambda']:.3f}
+                            </td>
+                            <td>meters</td>
+                        </tr>
+
+                    </tbody>
+                    
+
+                    <tbody>
+                        <tr class="result-subsection">
+                            <td>
+                                VELOCITY POTENTIAL AND WAVE PROFILE CALCULATIONS
+                            </td>   
+                        </tr>
+
+                        <tr>
+                            <td>
+                                Velocity Potential (φ) - Deep / Infinite Water
+                            </td>
+
+                            <td class="value">
+                                {result['velocity_Potential_phi_infiniteDepth']:.3f}
+                            </td>
+
+                            <td>m²/s</td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                Velocity Potential (φ) - Finite Depth Water
+                            </td>
+
+                            <td class="value">
+                                {result['velocity_Potential_phi_finiteDepth']:.3f}
+                            </td>
+
+                            <td>m²/s</td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                Wave Profile (ζ) - Finite Depth Water
+                            </td>
+
+                            <td class="value">
+                                {result['wave_Profile_finite_zeta']:.3f}
+                            </td>
+
+                            <td>meters</td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                Wave Profile (ζ) - Deep / Infinite Water
+                            </td>
+
+                            <td class="value">
+                                {result['wave_Profile_infinite_zeta']:.3f}
+                            </td>
+
+                            <td>meters</td>
+                        </tr>
+
+                    </tbody>
+
+            
+                    <tbody>
+                        <tr>
+                            <td>
+                                DYNAMIC PRESSURE CALCULATIONS
+                             </td>   
+                        </tr>
+
+                        <tr>
+                            <td>
+                                Dynamic Pressure (p) - Deep / Infinite Water
+                            </td>
+
+                            <td class="value">
+                                {result['dynamic_pressure_infiniteDepth']:.3f}
+                            </td>
+
+                            <td>Pa</td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                Dynamic Pressure (p) - Finite Depth Water
+                            </td>
+
+                            <td class="value">
+                                {result['dynamic_pressure_finiteDepth']:.3f}
+                            </td>
+
+                            <td>Pa</td>
+                        </tr>
+
+                    </tbody>
+
+
+                    <tbody>
+                        <tr>
+                            <td>
+                                X COMPONENT OF VELOCITY AND ACCELERATION
+                             </td>   
+                        </tr>
+
+                        <tr>
+                            <td>
+                                X Component of Velocity (u) - Finite Depth Water
+                            </td>
+
+                            <td class="value">
+                                {result['x_velocity_finiteDepth']:.3f}
+                            </td>
+
+                            <td>m/s</td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                X Component of Acceleration (a) - Finite Depth Water
+                            </td>
+
+                            <td class="value">
+                                {result['x_acceleration_finiteDepth']:.3f}
+                            </td>
+
+                            <td>m/s²</td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                X Component of Velocity (u) - Deep / Infinite Water
+                            </td>
+
+                            <td class="value">
+                                {result['x_velocity_infiniteDepth']:.3f}
+                            </td>
+
+                            <td>m/s</td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                X Component of Acceleration (a) - Deep / Infinite Water
+                            </td>
+
+                            <td class="value">
+                                {result['x_acceleration_infiniteDepth']:.3f}
+                            </td>
+
+                            <td>m/s²</td>
+                        </tr>
+
+                    </tbody>
+
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                Z COMPONENT OF VELOCITY AND ACCELERATION
+                            </td> 
+                        </tr>
+
+                        <tr>
+                            <td>
+                                Z Component of Velocity (u) - Finite Depth Water
+                            </td>
+
+                            <td class="value">
+                                {result['z_velocity_finiteDepth']:.3f}
+                            </td>
+
+                            <td>m/s</td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                Z Component of Acceleration (a) - Finite Depth Water
+                            </td>
+
+                            <td class="value">
+                                {result['z_acceleration_finiteDepth']:.3f}
+                            </td>
+
+                            <td>m/s²</td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                Z Component of Velocity (w) - Deep / Infinite Water
+                            </td>
+
+                            <td class="value">
+                                {result['z_velocity_infiniteDepth']:.3f}
+                            </td>
+
+                            <td>m/s</td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                Z Component of Acceleration (a) - Deep / Infinite Water
+                            </td>
+
+                            <td class="value">
+                                {result['z_acceleration_infiniteDepth']:.3f}
+                            </td>
+
+                            <td>m/s²</td>
+                        </tr>
+
+                    </tbody>
+
+
+
+
+
+
+                </table>
+
+
+                <!-- =====================================================
+                    RESULT SUMMARY
+                    ===================================================== -->
+
+                <div class="result-summary">
+
+                    <strong>Calculation Status:</strong>
+
+                    Hydrodynamic wave parameters calculated successfully
+                    based on the specified input conditions.
+
+                </div>
+
+
+                <!-- =====================================================
+                    GRAPH
+                    ===================================================== -->
 
                 <div class="section">
                     DISPERSION RELATION GRAPH
                 </div>
 
-                <div style="text-align: center;">
-                    <img class="graph"
-                        src="data:image/png;base64,{graph_base64}">
+
+                <div class="graph-container">
+
+                    <img
+                        class="graph"
+                        src="data:image/png;base64,{graph_base64}"
+                        alt="Dispersion Relation Graph"
+                    >
+
                 </div>
 
-                <br>
+
+                <!-- =====================================================
+                    FOOTER
+                    ===================================================== -->
 
                 <div class="footer">
-                    © 2026 ASHKAM ENERGY Pvt. Ltd. | All Rights Reserved
+
+                    <span class="footer-company">
+                        ASHKAM ENERGY PVT. LTD.
+                    </span>
+
+                    &nbsp; | &nbsp;
+
+                    Hydrodynamic Loads Calculation Report
+
+                    &nbsp; | &nbsp;
+
+                    &copy; 2026 All Rights Reserved
+
                 </div>
 
+
+            </div>
+
             </body>
+
             </html>
             """
 
-            # ---------------------------------------------------------
+
+            # =========================================================
             # Set HTML
-            # ---------------------------------------------------------
+            # =========================================================
+
             document.setHtml(html)
 
-            # ---------------------------------------------------------
-            # Print to PDF
-            # ---------------------------------------------------------
+
+            # =========================================================
+            # Print HTML to PDF
+            # =========================================================
+
             document.print_(printer)
+
+
+            # =========================================================
+            # Success message
+            # =========================================================
 
             QtWidgets.QMessageBox.information(
                 None,
@@ -727,13 +1447,14 @@ class Ui_MainWindow(object):
                 f"PDF saved successfully:\n\n{file_path}"
             )
 
+
         except Exception as e:
+
             QtWidgets.QMessageBox.critical(
                 None,
                 "PDF Error",
                 f"Unable to generate PDF:\n\n{str(e)}"
             )
-
 
     def show_dispersion_graph(
                 self,
